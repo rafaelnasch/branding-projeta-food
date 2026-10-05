@@ -1,0 +1,197 @@
+{
+ "marca": "Projeta Food",
+ "gerado_em": "2026-10-05",
+ "status": "versão mestra a partir do vetor oficial · cor unificada em #ED0012 · aguarda aprovação",
+ "fonte": {
+  "logo": "assets/referencia-original/logo.svg (vetor do site projetafood.com.br, coletado em 05/10/2026)",
+  "simbolo": "assets/referencia-original/favicon.svg (o mesmo desenho do O + foguete do logo, ampliado 1,7754 vez)",
+  "alteracoes": [
+   "cor #FF0013 convertida para #ED0012 (Ignição)",
+   "caminho duplicado do O removido (os dois eram idênticos)",
+   "estilos internos (.cls-1, .cls-2, .cls-3) trocados por grupos com classe de papel e cor em atributo",
+   "viewBox justo medido no navegador; nenhuma coordenada de forma foi alterada"
+  ],
+  "fidelidade_cobertura": {
+   "completa_vs_logo_original": 0.9992,
+   "simbolo_vs_favicon_original": 1.0,
+   "favicon_vs_recorte_do_logo": 0.9986,
+   "como_ler": "sobreposição das áreas pintadas renderizadas a 2400 px (1 = idêntico). A diferença residual vem da borda suavizada do O, que no original era pintado duas vezes."
+  }
+ },
+ "cores": {
+  "noite": "#050203",
+  "branco": "#FFFFFF",
+  "ignicao": "#ED0012",
+  "preto": "#000000"
+ },
+ "tokens_svg": {
+  ".pf-base": "letras PROJET, MARKETING e o O do símbolo",
+  ".pf-acento": "Seta A, FOOD e foguete",
+  ".pf-foguete": "foguete (corpo, aletas, janela vazada e chama; fill-rule evenodd)",
+  "uso": "Cada grupo traz a cor em atributo fill (funciona em qualquer programa). Com o SVG embutido no HTML, CSS pode trocar a cor pela classe; só use isso para alternar entre as versões aprovadas."
+ },
+ "versoes_de_cor": {
+  "negativa": "oficial: PROJET e MARKETING em Branco; foguete, A e FOOD em Ignição; sobre Noite, Preto, Superfície, Superfície Alta, Grafite Brasa e foto escurecida; Vinho Noite com cautela",
+  "positiva": "PROJET e MARKETING em Noite; foguete, A e FOOD em Ignição; sobre Branco, Bancada e Rosado",
+  "branca": "uma cor Branco; sobre campo Ignição, foto, vídeo e cor de outra marca",
+  "noite": "uma cor Noite #050203 (o preto da marca); gravação, carimbo, impressão a uma cor, cor clara de outra marca",
+  "ignicao": "uma cor Ignição; raro, só brinde e gravação sobre fundo claro neutro"
+ },
+ "unidades_de_construcao": {
+  "unidade": "u = unidade do viewBox do logo completo (largura 239,97 u)",
+  "A_altura_maiusculas": 35.75,
+  "T_traco": 6.41,
+  "R_raio_externo": 11.78,
+  "R_por_A": 0.3295,
+  "altura_FOOD": 9.44,
+  "altura_MARKETING": 7.01,
+  "foguete_acima_das_maiusculas": 19.93,
+  "escala_simbolo_sobre_logo": 1.7754
+ },
+ "respiro_regra": "x = R = 11,78 u, o raio externo das curvas do P, do R e do O (cerca de um terço da altura das maiúsculas). Manter x livre nos quatro lados, medido da ponta do foguete em cima, da linha FOOD MARKETING embaixo (ou da base das letras na reduzida) e das extremidades do P e do A. No símbolo, o mesmo R vale 20,91 u na escala do arquivo.",
+ "layouts": {
+  "completa": {
+   "viewBox": [
+    0,
+    0,
+    239.97,
+    71.09
+   ],
+   "proporcao_largura_por_altura": 3.3756,
+   "respiro_x_u": 11.78,
+   "respiro_x_fracao_da_altura": 0.1657,
+   "area_com_respiro_u": [
+    263.53,
+    94.65
+   ],
+   "minimo_tela_px": {
+    "largura": 240
+   },
+   "minimo_impresso_mm": {
+    "largura": 60
+   },
+   "teste_de_leitura": "FOOD MARKETING lê bem até 180 px de largura (MARKETING com 5,3 px de altura), fica no limite em 160 px e deixa de ler em 140 px (4,1 px). Mínimo de uso fixado em 240 px (MARKETING com 7,0 px) para ter folga em tela sem nitidez, imagem comprimida e foto de fundo. Em 60 mm, MARKETING tem 1,75 mm de altura (calculado)."
+  },
+  "reduzida": {
+   "viewBox": [
+    0,
+    0,
+    239.97,
+    55.68
+   ],
+   "proporcao_largura_por_altura": 4.3098,
+   "respiro_x_u": 11.78,
+   "respiro_x_fracao_da_altura": 0.2116,
+   "area_com_respiro_u": [
+    263.53,
+    79.24
+   ],
+   "minimo_tela_px": {
+    "largura": 96
+   },
+   "minimo_impresso_mm": {
+    "largura": 25
+   },
+   "teste_de_leitura": "A janela do foguete aparece até 96 px de largura e some em 80 px; em 64 px o foguete vira mancha. Em 25 mm as maiúsculas têm 3,72 mm e a janela 0,39 mm (calculado)."
+  },
+  "simbolo": {
+   "viewBox": [
+    0.0,
+    0.0,
+    66.69,
+    98.84
+   ],
+   "proporcao_largura_por_altura": 0.6747,
+   "respiro_x_u": 20.91,
+   "respiro_x_fracao_da_altura": 0.2116,
+   "area_com_respiro_u": [
+    108.52,
+    140.67
+   ],
+   "minimo_tela_px": {
+    "altura": 24
+   },
+   "minimo_impresso_mm": {
+    "altura": 8
+   },
+   "teste_de_leitura": "A fenda de base e a janela do foguete aparecem até 24 px de altura; em 20 px a janela some; em 16 px o símbolo ainda é reconhecível só sobre placa Noite (favicon). Em 8 mm a janela tem cerca de 0,54 mm (calculado)."
+  },
+  "foguete": {
+   "viewBox": [
+    20.33,
+    0.0,
+    25.37,
+    46.91
+   ],
+   "proporcao_largura_por_altura": 0.5408,
+   "natureza": "elemento de construção, não é marca",
+   "uso": "base da Chama de Status, do Pavio e de ícones do sistema; nunca como assinatura da Projeta Food, nunca girado, nunca solto no lugar do logo"
+  }
+ },
+ "extras": {
+  "avatar": {
+   "arquivos": [
+    "projeta-avatar.svg",
+    "projeta-avatar-1080.png",
+    "projeta-avatar-640.png"
+   ],
+   "composicao": "símbolo negativo centrado num quadrado Noite, com 64% da altura do quadro; os cantos da caixa do símbolo ficam a 38,6% do centro, dentro do círculo central de 80% (recorte circular seguro)",
+   "minimo_px": 40
+  },
+  "favicon": {
+   "arquivos": [
+    "projeta-favicon.svg",
+    "projeta-favicon-16.png",
+    "projeta-favicon-32.png",
+    "projeta-favicon-180.png",
+    "projeta-favicon-512.png"
+   ],
+   "composicao": "SVG adaptativo: O em Noite com o navegador em tema claro e em Branco no tema escuro, foguete sempre Ignição (testado nos dois temas). PNG 16 e 32 em placa Noite de canto arredondado com o símbolo ocupando 86 a 88% da altura; 180 (ícone do iPhone) e 512 (aplicativo instalado) em quadrado Noite cheio, mesma composição do avatar.",
+   "html": "<link rel=\"icon\" href=\"projeta-favicon.svg\" type=\"image/svg+xml\"><link rel=\"icon\" href=\"projeta-favicon-32.png\" sizes=\"32x32\"><link rel=\"apple-touch-icon\" href=\"projeta-favicon-180.png\">"
+  },
+  "compartilhamento": {
+   "arquivo": "projeta-compartilhamento-1200x630.png",
+   "composicao": "Noite, logo completo negativo com 620 px de largura, Fio com Fenda e o domínio em Barlow 600 espaçado",
+   "uso": "og:image do site e de páginas da Projeta Food"
+  }
+ },
+ "png": {
+  "completa e reduzida": ".png com 2400 px de largura e -web.png com 800 px, fundo transparente",
+  "simbolo e foguete": ".png com 1200 px de altura e -web.png com 400 px, fundo transparente",
+  "atencao": "PNG branco transparente some em pré-visualização de fundo claro e é recusado como logo em anúncio do Google: para Google Ads e perfis, use o avatar ou aplique a negativa sobre Preto dentro da imagem."
+ },
+ "fundos_permitidos": {
+  "negativa": [
+   "Noite",
+   "Preto",
+   "Superfície",
+   "Superfície Alta",
+   "Grafite Brasa",
+   "foto escurecida"
+  ],
+  "com_cautela": [
+   "Vinho Noite"
+  ],
+  "positiva": [
+   "Branco",
+   "Bancada",
+   "Rosado"
+  ],
+  "campo_ignicao": "só a versão branca de uma cor",
+  "cor_de_outra_marca": "só uma cor (branca ou noite), a que tiver mais contraste"
+ },
+ "proibidos": [
+  "Versão negativa sobre fundo claro ou positiva sobre fundo escuro.",
+  "Logo colorido sobre campo Ignição (use a branca de uma cor).",
+  "Recolorir (inclusive com o laranja do Grupo Projeta), aplicar degradê, brilho, neon, sombra ou contorno.",
+  "Girar, inclinar, esticar, condensar ou corrigir o espaçamento entre letras.",
+  "Separar o foguete do O, girar o foguete, trocar o foguete por outro ícone ou usar o foguete solto como marca.",
+  "Usar a completa abaixo de 240 px de largura ou 60 mm (troque pela reduzida).",
+  "Redigitar PROJETA ou FOOD MARKETING em qualquer fonte.",
+  "Desrespeitar o respiro x nos quatro lados.",
+  "Colocar o logo sobre foto movimentada sem escurecer a área.",
+  "Selo de parceiro maior, mais destacado ou colado no logo.",
+  "Logo da Projeta Food na arte de peça de cliente para o consumidor final.",
+  "Usar o vetor antigo com #FF0013 ou o O duplicado em material novo."
+ ]
+}

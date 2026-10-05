@@ -1,0 +1,15 @@
+.DS_Store
+__pycache__/
+*.pyc
+*.zip
+_preview-*.html
+_teste-*.html
+_render-*.png
+node_modules/
+.env
+.env.*
+# Fontes comerciais da Projeta (licença própria): nunca neste repositório público
+*Transducer*
+*transducer*
+*Kallisto*
+*kallisto*

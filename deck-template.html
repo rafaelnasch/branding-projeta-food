@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apresentação Projeta Food</title>
+<meta name="description" content="Esqueleto de apresentação da Projeta Food no sistema Plataforma Ignição v1: quinze tipos de slide em 1440 × 900, com navegação por teclado e toque, notas do apresentador, modo co-assinado e exportação em PDF de um slide por página.">
+<meta name="theme-color" content="#050203">
+<meta name="color-scheme" content="dark">
+<link rel="icon" type="image/svg+xml" href="assets/brand/projeta-favicon.svg">
+<link rel="apple-touch-icon" href="assets/brand/projeta-favicon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira:wdth,wght@100..125,400..800&family=Unbounded:wght@500..700&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<!-- Fonte da marca fictícia Forno Vivo (só no modo co-assinado e no case; nunca nas camadas da Projeta) -->
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<!--
+  APRESENTAÇÃO PROJETA FOOD · esqueleto de deck · sistema Plataforma Ignição v1
+
+  COMO USAR ESTE ESQUELETO
+  1. Duplique este arquivo na mesma pasta de pviz.js, pforms.js e assets/
+     (os caminhos são relativos). Abra no navegador: cada slide é um palco de
+     1440 × 900 escalado para caber na janela.
+  2. Cada slide é uma <section class="slide TIPO campo-*">. Os quinze tipos
+     prontos: capa, capitulo, frase, compara, diagnostico, processo, colunas,
+     numero, dados, telemetria, case, equipe, cronograma, proposta e
+     fechamento. Para um slide novo, copie a seção do mesmo tipo, troque o
+     texto e mantenha as classes (s-folio, pavio, s-titulo, s-apoio, regua,
+     s-rodape, s-num). O campo manda na cor: o mesmo componente sai certo no
+     Noite, no Grafite Brasa, no Branco e no campo Ignição, sem ajuste.
+  3. Modo co-assinado (camada 2: apresentação de gestão para um restaurante
+     cliente): tecla C, ou class="js coassinado" no <html>. A capa troca o
+     logotipo completo pelo lockup de co-assinatura (cliente à esquerda, Fio
+     com Fenda vertical, Projeta reduzida à direita) e o nome do restaurante
+     vira o título. O logo do cliente mede 1,5 vez a altura do PROJETA e
+     nunca é recolorido. Troque a marca fictícia Forno Vivo pelo arquivo do
+     cliente aprovado na ficha de marca.
+  4. As notas do apresentador ficam no <aside class="notas"> de cada slide.
+     A tecla P abre o painel com a nota do slide atual.
+  5. Gráficos: dados no atributo data-pviz (motor pviz.js). Formas da casa
+     (Trajetória e outras): atributo data-pforms (motor pforms.js). Os dois
+     montam sozinhos. No palco, o desenho sai ampliado 1,5 vez para ler a
+     distância; data-escala="1.25" no contêiner muda a ampliação de um
+     gráfico (use quando o tipo precisa de mais largura, como o comparativo).
+  6. Nunca apague o fechamento: é ele que leva os canais oficiais e a linha
+     de identificação quando o PDF sai da reunião.
+
+  REGRAS DO SLIDE (Plataforma Ignição)
+  O campo é Noite. A Ignição #ED0012 acende UMA informação por slide (a
+  palavra decisiva do título, o número, o botão) e ocupa no máximo 15% da
+  área. Exceções nomeadas, uma por slide: a página de virada em campo
+  Ignição e a Faixa de Telemetria. Nunca dois slides vermelhos seguidos.
+  Título em caixa alta, Saira larga 700, com UMA linha ou a palavra final em
+  Ignição (<em>); no campo Ignição a palavra vai em Noite. Vermelho pequeno no
+  escuro é Chama; no claro é Rubro. Uma Trajetória, uma Moldura O, um Anel e
+  um Fio com Fenda por slide (o do fólio já conta). Tudo sobe: Seta A só para
+  cima ou para a direita. Todo número tem régua (período, base e fonte); sem
+  prova, entra o Contador vazio com "dado em validação"; resultado de um
+  restaurante nunca é vendido como típico. Número de porte e selo de
+  parceiro ficam entre colchetes até a aprovação da Projeta Food. A marca é
+  sempre o arquivo de assets/brand/ (versão mestra a partir do vetor oficial
+  · cor unificada em #ED0012 · aguarda aprovação). Nenhuma foto de pessoa
+  real, nenhuma comida gerada por inteligência artificial, nenhum logo de
+  cliente real sem autorização escrita.
+
+  NAVEGAÇÃO
+  Setas, PageUp, PageDown, espaço, Home e End. Clique: terço esquerdo volta,
+  o resto avança. Toque: deslize para os lados. P: notas. F: tela cheia.
+  C: modo co-assinado. O número do slide fica no endereço (#3 abre o
+  terceiro). No celular (em pé ou deitado) os slides empilham e a página rola.
+
+  PDF: no Chrome, Cmd+P, destino "Salvar como PDF", margens "Nenhuma",
+  "Gráficos de segundo plano" ligado: sai uma página de 1440 × 900 por slide.
+  Com Playwright: page.pdf(width="1440px", height="900px",
+  print_background=True, prefer_css_page_size=True).
+-->
+<script>
+/* Marca a página como "com JavaScript" antes de pintar: só assim o modo palco (slides escalados) liga.
+   Sem JavaScript, os slides aparecem empilhados e inteiros. */
+document.documentElement.classList.add('js');
+</script>
+<style>
+/* =====================================================================
+   PLATAFORMA IGNIÇÃO v1 · apresentação da Projeta Food (deck-template.html)
+   Ordem: tokens e campos (mesmos valores do brand-book.html), reset,
+   tipografia de palco, formas da casa, estrutura do slide, os quinze tipos,
+   interface (progresso, contador, notas), modo palco, celular e impressão.
+   Uma única folha de estilo; superfície chapada (sem vidro, neon ou sombra
+   decorativa); cartão com raio de 26 a 32 px, botão em pílula.
+   ===================================================================== */
+
+/* ---------- 1. Tokens ---------- */
+:root{
+  color-scheme:dark;
+  --noite:#050203; --preto:#000000; --superficie:#10090B; --superficie-alta:#1A0D10;
+  --grafite:#221E1E; --branco:#FFFFFF; --bancada:#F7F7F7;
+  --ignicao:#ED0012; --rosado:#FEDADE; --faisca-clara:#FA949D; --chama:#FF5A67;
+  --rubro:#AD000D; --brasa-funda:#7E000A; --vinho:#560007; --vinho-noite:#300008; --carvao-rubro:#120002;
+  --divisa:#650008;
+  --fumaca-50:#F0EEEE; --fumaca-200:#BDB8B8; --fumaca-400:#8C8686; --fumaca-600:#5E5858; --fumaca-800:#3A3434;
+  --fio-escuro:#FFFFFF24; --fio-claro:#E2DEDE;
+  --positivo:#75DC91; --positivo-claro:#1E7B45; --atencao:#FFC145; --atencao-claro:#8A5A00;
+  --negativo:#FF8FB0; --negativo-claro:#A3175A; --informacao:#8FB8FF; --informacao-claro:#1F5FBF;
+
+  --font-titulo:"Transducer","Transducer Projeta","Saira",Arial,sans-serif;
+  --font-display:"Kallisto","Kallisto Projeta","Unbounded","Arial Black",sans-serif;
+  --font-texto:"Barlow",Arial,sans-serif;
+  --largo:112.5%;
+  --track-sobre:.34em;
+
+  --r-cartao:26px; --r-cartao-g:32px; --r-placa:12px; --r-pilula:999px;
+  --curva:cubic-bezier(.22,1,.36,1);
+
+  /* Escala do slide no celular (o palco de 1440 redefine abaixo) */
+  --m:16px;
+  --s-display:40px; --s-titulo:32px; --s-sub:22px; --s-apoio:17px; --s-texto:16px;
+  --s-legenda:13px; --s-folio:11px; --s-num:132px; --s-frase:38px;
+
+  /* Formas da casa em máscara (a cor vem de background-color) */
+  --seta-a:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 41.12 35.75'%3E%3Cpolygon points='0,35.75 16.99,0 24.13,0 41.12,35.75 34.02,35.75 20.56,7.43 7.1,35.75'/%3E%3C/svg%3E");
+  --chama-forma:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='87.4 14.6 6.8 12.1'%3E%3Cpath d='M91.05,26.43c-.98-1.28-2.53-3.64-3.14-6.01-1.87-7.23,7.34-7.57,5.91-.22-.47,2.41-1.87,4.88-2.77,6.23Z'/%3E%3C/svg%3E");
+  --mo-cunha:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 1' preserveAspectRatio='none'%3E%3Cpath d='M0 0H36.5L43.5 1H0ZM63.5 0H100V1H56.5Z'/%3E%3C/svg%3E");
+  --grade-cruz:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='192' height='192'%3E%3Cpath d='M90 96H102M96 90V102' stroke='%23FFFFFF' stroke-opacity='.16'/%3E%3C/svg%3E");
+  --ic-check:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='m9 12 2 2 4-4'/%3E%3C/svg%3E");
+  --ic-x:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='m15 9-6 6'/%3E%3Cpath d='m9 9 6 6'/%3E%3C/svg%3E");
+  --ic-alerta:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3'/%3E%3Cpath d='M12 9v4'/%3E%3Cpath d='M12 17h.01'/%3E%3C/svg%3E");
+  --ic-medido:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m12 14 4-4'/%3E%3Cpath d='M3.34 19a10 10 0 1 1 17.32 0'/%3E%3C/svg%3E");
+  --ic-calc:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='16' height='20' x='4' y='2' rx='2'/%3E%3Cline x1='8' x2='16' y1='6' y2='6'/%3E%3Cline x1='16' x2='16' y1='14' y2='18'/%3E%3Cpath d='M16 10h.01'/%3E%3Cpath d='M12 10h.01'/%3E%3Cpath d='M8 10h.01'/%3E%3Cpath d='M12 14h.01'/%3E%3Cpath d='M8 14h.01'/%3E%3Cpath d='M12 18h.01'/%3E%3Cpath d='M8 18h.01'/%3E%3C/svg%3E");
+  --ic-frasco:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2v6a2 2 0 0 0 .245.96l5.51 10.08A2 2 0 0 1 18 22H6a2 2 0 0 1-1.755-2.96l5.51-10.08A2 2 0 0 0 10 8V2'/%3E%3Cpath d='M6.453 15h11.094'/%3E%3Cpath d='M8.5 2h7'/%3E%3C/svg%3E");
+}
+@property --anel-a{ syntax:"<angle>"; inherits:false; initial-value:0deg; }
+
+/* ---------- 2. Campos: cada campo define as variáveis de leitura (--f-*) ---------- */
+.campo-noite,.campo-preto,.campo-grafite,:root{
+  --f-fundo:var(--noite); --f-texto:var(--fumaca-50); --f-titulo:var(--branco); --f-apoio:var(--fumaca-200);
+  --f-legenda:var(--fumaca-400); --f-enfase:var(--chama); --f-ignicao:var(--ignicao); --f-num:var(--ignicao);
+  --f-fio:var(--fio-escuro); --f-fio-forte:#FFFFFF3D; --f-painel:var(--superficie); --f-painel-alto:var(--superficie-alta);
+  --f-ok:var(--positivo); --f-atencao:var(--atencao); --f-neg:var(--negativo); --f-info:var(--informacao);
+  --f-agua:rgba(255,255,255,.08); --f-mira:rgba(255,255,255,.7);
+}
+.campo-noite,.campo-preto,.campo-grafite,.campo-branco,.campo-ignicao{ background-color:var(--f-fundo); color:var(--f-texto); }
+.campo-preto{ --f-fundo:var(--preto); }
+.campo-grafite{ --f-fundo:var(--grafite); --f-painel:var(--noite); --f-painel-alto:var(--superficie-alta); }
+.campo-branco{
+  --f-fundo:var(--branco); --f-texto:var(--fumaca-800); --f-titulo:var(--noite); --f-apoio:var(--fumaca-600);
+  --f-legenda:var(--fumaca-600); --f-enfase:var(--rubro); --f-num:var(--noite);
+  --f-fio:var(--fio-claro); --f-fio-forte:#CFC9C9; --f-painel:var(--bancada); --f-painel-alto:var(--fumaca-50);
+  --f-ok:var(--positivo-claro); --f-atencao:var(--atencao-claro); --f-neg:var(--negativo-claro); --f-info:var(--informacao-claro);
+  --f-agua:rgba(5,2,3,.06); --f-mira:rgba(5,2,3,.7);
+}
+.campo-ignicao{
+  --f-fundo:var(--ignicao); --f-texto:var(--branco); --f-titulo:var(--branco); --f-apoio:var(--branco); --f-legenda:var(--branco);
+  --f-enfase:var(--noite); --f-ignicao:var(--noite); --f-num:var(--noite);
+  --f-fio:rgba(255,255,255,.34); --f-fio-forte:rgba(255,255,255,.55); --f-painel:var(--rubro); --f-painel-alto:var(--brasa-funda);
+  --f-agua:rgba(5,2,3,.12);
+  font-weight:600;   /* Branco sobre Ignição (4,56): peso 600 e 16 px no mínimo */
+}
+
+/* ---------- 3. Reset ---------- */
+*,*::before,*::after{ box-sizing:border-box; }
+html{ -webkit-text-size-adjust:100%; text-size-adjust:100%; }
+body{
+  margin:0; background:#050203; color:#FFFFFF;
+  font-family:var(--font-texto); font-size:var(--s-texto); line-height:1.5; font-weight:400;
+  font-variant-numeric:lining-nums; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+}
+img,svg{ display:block; max-width:100%; }
+img{ height:auto; }
+svg{ overflow:visible; }
+h1,h2,h3,h4,p,ul,ol,dl,dd,dt,figure,blockquote{ margin:0; }
+ul,ol{ padding:0; list-style:none; }
+p,li,dd,dt,figcaption,a{ overflow-wrap:anywhere; }
+::selection{ background:var(--ignicao); color:var(--branco); }
+:focus-visible{ outline:2px solid var(--chama); outline-offset:3px; border-radius:4px; }
+.so-leitor{ position:absolute!important; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0 0 0 0); clip-path:inset(50%); white-space:nowrap; border:0; }
+.sprite{ position:absolute; width:0; height:0; overflow:hidden; }
+
+/* ---------- 4. Tipografia de palco ---------- */
+.s-display,.s-titulo,.s-sub,.s-frase{
+  font-family:var(--font-titulo); font-stretch:var(--largo); font-weight:700; text-transform:uppercase;
+  letter-spacing:-.055em; line-height:1; color:var(--f-titulo); overflow-wrap:normal; word-break:normal; hyphens:manual; text-wrap:balance;
+}
+.s-display{ font-size:var(--s-display); font-weight:800; }
+.s-titulo{ font-size:var(--s-titulo); }
+.s-sub{ font-size:var(--s-sub); line-height:1.04; letter-spacing:-.04em; }
+.s-frase{ font-size:var(--s-frase); font-weight:800; }
+:is(.s-display,.s-titulo,.s-sub,.s-frase) em{ font-style:normal; color:var(--f-ignicao); }
+.acento{ line-height:.98; }
+.s-apoio{ font-size:var(--s-apoio); line-height:1.45; color:var(--f-apoio); max-width:34em; text-wrap:pretty; }
+.s-texto{ font-size:var(--s-texto); line-height:1.5; color:var(--f-texto); }
+.regua{ display:block; font:400 var(--s-legenda)/1.45 var(--font-texto); color:var(--f-legenda); letter-spacing:.01em; }
+.regua b{ font-weight:600; color:var(--f-apoio); }
+.display-apoio{ font-family:var(--font-display); font-weight:600; text-transform:uppercase; letter-spacing:.01em; line-height:1.1; color:var(--f-titulo); }
+strong,b{ font-weight:600; color:var(--f-titulo); }
+
+/* Pavio: o traço vermelho que antecede o sobretítulo */
+.pavio{
+  display:inline-flex; align-items:center; gap:.75em;
+  font:600 var(--s-folio)/1.3 var(--font-texto); letter-spacing:var(--track-sobre); text-transform:uppercase; color:var(--f-titulo);
+}
+.pavio::before{ content:""; width:16px; height:2px; flex:none; background:var(--ignicao); }
+.campo-ignicao .pavio::before{ background:var(--noite); }
+
+/* Ícones Lucide inline: traço 2, ponta redonda, cor do texto */
+.ic{ display:inline-block; flex:none; width:24px; height:24px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+
+/* ---------- 5. Formas da casa ---------- */
+.seta-a{ display:inline-block; flex:none; width:1em; height:.869em; background:var(--f-ignicao); -webkit-mask:var(--seta-a) center/contain no-repeat; mask:var(--seta-a) center/contain no-repeat; }
+.seta-a--dir{ transform:rotate(90deg); }
+.chama{ display:inline-block; flex:none; width:.56em; height:1em; background:var(--ignicao); -webkit-mask:var(--chama-forma) center/contain no-repeat; mask:var(--chama-forma) center/contain no-repeat; }
+.chama--pulsa{ animation:chama-pulso 1.6s ease-in-out infinite; }
+@keyframes chama-pulso{ 0%,100%{ opacity:1; } 50%{ opacity:.45; } }
+.status{ display:inline-flex; align-items:center; gap:8px; font:600 var(--s-legenda)/1.3 var(--font-texto); letter-spacing:.08em; text-transform:uppercase; color:var(--f-titulo); }
+
+/* Fio com Fenda: a fenda de base do O virando divisor (um por slide) */
+.fio-fenda{ display:grid; grid-template-columns:minmax(0,1fr) var(--fenda,9%) minmax(0,1fr); align-items:center; min-height:16px; color:var(--f-fio-forte); }
+.fio-fenda::before,.fio-fenda::after{ content:""; height:var(--fio-esp,1px); background:currentColor; }
+.fio-fenda::before{ grid-column:1; grid-row:1; }
+.fio-fenda::after{ grid-column:3; grid-row:1; }
+.fio-fenda > *{ grid-column:2; grid-row:1; justify-self:center; font-size:14px; }
+.fio-fenda--v{ grid-template-columns:none; grid-template-rows:minmax(0,1fr) var(--fenda,9%) minmax(0,1fr); justify-items:center; width:1px; min-height:0; }
+.fio-fenda--v::before,.fio-fenda--v::after{ width:1px; height:auto; align-self:stretch; }
+.fio-fenda--v::before{ grid-row:1; grid-column:1; }
+.fio-fenda--v::after{ grid-row:3; grid-column:1; }
+
+/* Contagem: numeral Saira 600 esticado 1,5 vez, dois dígitos, sempre texto */
+.contagem{
+  --dig:2; display:inline-block; position:relative; flex:none;
+  width:calc(var(--dig) * .936em); height:.9em;
+  font-family:var(--font-titulo); font-stretch:var(--largo); font-weight:600;
+  font-variant-numeric:lining-nums tabular-nums; letter-spacing:-.06em; line-height:.9; color:var(--f-num);
+}
+.contagem > span{ display:block; transform:scaleX(1.5); transform-origin:0 50%; white-space:nowrap; }
+.contagem--agua{ color:var(--f-agua); }
+
+/* Moldura O: o O partido do logotipo (cunha em cima, fenda de 9% embaixo) */
+.moldura-o{
+  --mo-t:12px; --mo-r:calc(var(--mo-t) * 6.25); --mo-cor:var(--f-titulo);
+  position:relative; display:grid; min-width:0; padding:calc(var(--mo-t) * 2.4); border-radius:var(--mo-r); isolation:isolate;
+}
+.moldura-o::before{
+  content:""; position:absolute; inset:0; z-index:-1; pointer-events:none;
+  border:var(--mo-t) solid var(--mo-cor); border-radius:inherit;
+  -webkit-mask:var(--mo-cunha) top/100% var(--mo-t) no-repeat, linear-gradient(90deg,#000 45.5%,transparent 45.5% 54.5%,#000 54.5%) bottom/100% var(--mo-t) no-repeat, linear-gradient(#000,#000) center/100% calc(100% - 2 * var(--mo-t) + 1px) no-repeat;
+          mask:var(--mo-cunha) top/100% var(--mo-t) no-repeat, linear-gradient(90deg,#000 45.5%,transparent 45.5% 54.5%,#000 54.5%) bottom/100% var(--mo-t) no-repeat, linear-gradient(#000,#000) center/100% calc(100% - 2 * var(--mo-t) + 1px) no-repeat;
+}
+.moldura-o__miolo{ position:relative; overflow:hidden; border-radius:calc(var(--mo-r) - var(--mo-t) * 2); min-height:0; }
+
+/* Anel de Ignição: contorno a 14% + arco de 25% em Ignição a partir do canto superior direito */
+.anel{ position:relative; }
+.anel::after{
+  content:""; position:absolute; inset:-1px; border-radius:inherit; padding:2px; pointer-events:none;
+  background:conic-gradient(from calc(20deg + var(--anel-a)), var(--ignicao) 0 25%, rgba(255,255,255,.14) 25% 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor;
+          mask:linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+.anel--gira::after{ animation:anel-giro 5.2s linear infinite; }
+@keyframes anel-giro{ to{ --anel-a:360deg; } }
+
+/* Mira de Diagnóstico: quatro cantos em L; Ignição quando o enquadrado é o problema */
+.mira{ --mi-b:32px; --mi-w:4px; --mi-c:var(--f-mira); position:relative; padding:14px; }
+.mira::before{
+  content:""; position:absolute; inset:0; pointer-events:none; background-repeat:no-repeat;
+  background-image:linear-gradient(var(--mi-c),var(--mi-c)),linear-gradient(var(--mi-c),var(--mi-c)),linear-gradient(var(--mi-c),var(--mi-c)),linear-gradient(var(--mi-c),var(--mi-c)),linear-gradient(var(--mi-c),var(--mi-c)),linear-gradient(var(--mi-c),var(--mi-c)),linear-gradient(var(--mi-c),var(--mi-c)),linear-gradient(var(--mi-c),var(--mi-c));
+  background-position:0 0,0 0,100% 0,100% 0,0 100%,0 100%,100% 100%,100% 100%;
+  background-size:var(--mi-b) var(--mi-w),var(--mi-w) var(--mi-b),var(--mi-b) var(--mi-w),var(--mi-w) var(--mi-b),var(--mi-b) var(--mi-w),var(--mi-w) var(--mi-b),var(--mi-b) var(--mi-w),var(--mi-w) var(--mi-b);
+}
+.mira--problema{ --mi-c:var(--ignicao); }
+
+/* Texturas: Brasa Controlada (um canto, até 30% da área) e Grade de Lançamento */
+.brasa,.brasa--contra{ background-repeat:no-repeat; }
+.brasa{ background-image:radial-gradient(ellipse 100% 100% at 100% 0%, #ED001285 0%, #AD000D42 37%, transparent 70%); background-size:min(100%,900px) min(100%,760px); background-position:100% 0; }
+.brasa--contra{ background-image:radial-gradient(ellipse 100% 100% at 100% 0%, #ED001285 0%, #AD000D42 37%, transparent 70%), radial-gradient(ellipse 100% 100% at 0% 100%, #30000866 0%, transparent 70%); background-size:min(100%,900px) min(100%,760px), min(100%,760px) min(100%,560px); background-position:100% 0, 0 100%; }
+.grade-lanc{ position:absolute; inset:0; z-index:0; pointer-events:none; background-image:var(--grade-cruz), linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px); background-size:192px 192px, 48px 48px, 48px 48px; -webkit-mask:linear-gradient(90deg, transparent 0%, #000 55%); mask:linear-gradient(90deg, transparent 0%, #000 55%); }
+
+/* Botão em pílula (do site): Unbounded 600 caixa alta */
+.botao{
+  display:inline-flex; align-items:center; justify-content:center; gap:12px; min-height:48px; padding:14px 30px; max-width:100%;
+  border:1px solid var(--ignicao); border-radius:var(--r-pilula); background:var(--ignicao); color:var(--branco);
+  font:600 var(--s-botao,16px)/1.15 var(--font-display); letter-spacing:.01em; text-transform:uppercase; text-decoration:none; text-align:center;
+}
+.botao .seta-a{ background:var(--branco); width:.9em; height:.8em; }
+.botao--contorno{ background:transparent; color:var(--branco); }
+.botoes{ display:flex; flex-wrap:wrap; gap:14px; }
+
+/* Pílula e veredito */
+.pilula{ display:inline-flex; align-items:center; gap:6px; min-height:30px; padding:4px 14px; max-width:100%; border:1px solid var(--f-fio-forte); border-radius:var(--r-pilula); font:600 var(--s-pilula,12px)/1.2 var(--font-texto); letter-spacing:.06em; text-transform:uppercase; color:var(--f-titulo); white-space:nowrap; }
+.pilula--atencao{ border-color:currentColor; color:var(--f-atencao); }
+.pilula--reserva{ border-style:dashed; color:var(--f-apoio); }
+.pilulas{ display:flex; flex-wrap:wrap; gap:10px; }
+.situacao{ display:inline-flex; align-items:center; gap:8px; }
+.situacao::before{ content:""; width:1.1em; height:1.1em; flex:none; background:currentColor; -webkit-mask:var(--ic-check) center/contain no-repeat; mask:var(--ic-check) center/contain no-repeat; }
+
+/* Lista com Seta A girada para a direita */
+.lista-seta{ display:grid; gap:14px; }
+.lista-seta li{ position:relative; padding-left:1.6em; font-size:var(--s-texto); line-height:1.45; color:var(--f-texto); }
+.lista-seta li::before{ content:""; position:absolute; left:0; top:.42em; width:.8em; height:.7em; background:var(--f-ignicao); -webkit-mask:var(--seta-a) center/contain no-repeat; mask:var(--seta-a) center/contain no-repeat; transform:rotate(90deg); }
+.lista-seta b{ display:block; }
+
+/* Cartão */
+.cartao{ position:relative; min-width:0; padding:28px; background:var(--f-painel); border:1px solid var(--f-fio); border-radius:var(--r-cartao); }
+.cartao__icone{ display:grid; place-items:center; width:52px; height:52px; border-radius:10px; background:var(--superficie-alta); color:var(--chama); border:1px solid var(--f-fio); }
+.cartao__titulo{ font-family:var(--font-titulo); font-stretch:var(--largo); font-weight:700; font-size:var(--s-cartao,20px); line-height:1.04; letter-spacing:-.04em; text-transform:uppercase; color:var(--f-titulo); overflow-wrap:normal; text-wrap:balance; }
+.cartao__texto{ font-size:var(--s-texto); line-height:1.45; color:var(--f-apoio); }
+
+/* Contador com régua: número, sinal em Ignição a 60%, rótulo e régua obrigatória */
+.contador{ position:relative; display:flex; flex-direction:column; gap:12px; min-width:0; padding-left:28px; }
+.contador::before{ content:""; position:absolute; left:0; top:6px; bottom:6px; width:3px; background:var(--o-cor,var(--f-titulo)); }
+.contador[data-origem="calculado"]{ --o-cor:var(--f-apoio); --o-ic:var(--ic-calc); }
+.contador[data-origem="calculado"]::before{ width:2px; left:.5px; }
+.contador[data-origem="estimado"]{ --o-cor:var(--f-atencao); --o-ic:var(--ic-frasco); }
+.contador[data-origem="estimado"]::before{ background:repeating-linear-gradient(180deg, var(--o-cor) 0 3px, transparent 3px 7px); }
+.contador__valor{ display:block; font-family:var(--font-titulo); font-stretch:var(--largo); font-weight:500; font-size:var(--s-num); line-height:.9; letter-spacing:-.06em; color:var(--f-titulo); font-variant-numeric:lining-nums tabular-nums; white-space:nowrap; }
+.contador__valor em{ font-style:normal; font-size:.6em; letter-spacing:-.02em; margin-left:.04em; color:var(--f-ignicao); }
+.contador__rotulo{ font:500 var(--s-apoio)/1.3 var(--font-texto); letter-spacing:.1em; text-transform:uppercase; color:var(--f-titulo); }
+.contador__origem{ display:inline-flex; align-items:center; gap:8px; font:600 var(--s-legenda)/1.2 var(--font-texto); letter-spacing:.12em; text-transform:uppercase; color:var(--o-cor,var(--f-apoio)); }
+.contador__origem::before{ content:""; width:1.1em; height:1.1em; background:currentColor; -webkit-mask:var(--o-ic,var(--ic-medido)) center/contain no-repeat; mask:var(--o-ic,var(--ic-medido)) center/contain no-repeat; }
+.contador--vazio .contador__valor{ position:relative; width:2.4em; height:.9em; color:transparent; overflow:hidden; }
+.contador--vazio .contador__valor::after{ content:""; position:absolute; left:0; right:0; top:50%; height:.07em; min-height:3px; background:var(--f-legenda); }
+
+/* Marca da Projeta em arquivo; troca de versão conforme o campo */
+.marca{ display:block; height:auto; max-width:none; }
+html:not(.coassinado) .so-coass,html.coassinado .so-proprio{ display:none!important; }
+
+/* Marca fictícia (é fictícia: pode ser desenhada com a fonte dela) e placa do cliente */
+[data-cliente="forno-vivo"]{ --cliente-cor-1:#1F3A2E; --cliente-cor-2:#F3E9D2; --cliente-cor-3:#D9A441; --cliente-fonte-titulo:"Fraunces",Georgia,serif; --cliente-fonte-texto:"Inter",Arial,sans-serif; }
+.marca-ficticia{ display:inline-flex; align-items:baseline; gap:.2em; font-family:var(--cliente-fonte-titulo); font-weight:800; line-height:1; letter-spacing:-.01em; color:var(--cliente-cor-2); white-space:nowrap; }
+.marca-ficticia b{ font-weight:inherit; color:var(--cliente-cor-3); }
+.placa-cliente{ display:inline-grid; place-items:center; padding:.32em .5em; border-radius:var(--r-placa); background:var(--cliente-cor-1); }
+
+/* Lockup de co-assinatura: cliente à esquerda, Fio com Fenda vertical, Projeta reduzida à direita.
+   --co-h = altura das maiúsculas do PROJETA; o logo do cliente mede 1,5 × --co-h. Respiro 2 R. */
+.coassinatura{ --co-h:22px; display:inline-flex; align-items:center; gap:calc(var(--co-h) * .66); max-width:100%; }
+.coassinatura .marca-ficticia{ font-size:calc(var(--co-h) * 1.5 * 1.36); }
+.coassinatura .placa-cliente{ padding:calc(var(--co-h) * .32) calc(var(--co-h) * .5); }
+.coassinatura__projeta{ height:calc(var(--co-h) * 1.556); width:auto; flex:none; max-width:none; }
+.coassinatura .fio-fenda--v{ height:calc(var(--co-h) * 2.1); color:var(--f-fio-forte); }
+
+/* Espaço de foto-mestra (enquanto não há foto licenciada do cliente) */
+.foto-mestra{
+  position:relative; display:flex; flex-direction:column; justify-content:flex-end; gap:6px; height:100%; min-height:220px; padding:7%;
+  background:repeating-linear-gradient(135deg, #F7F7F7 0 14px, #F0EEEE 14px 28px); color:var(--fumaca-600);
+  font:600 var(--s-legenda)/1.4 var(--font-texto);
+}
+.foto-mestra b{ color:var(--noite); text-transform:uppercase; letter-spacing:.12em; }
+.foto-mestra--escura{ background:repeating-linear-gradient(135deg, #1A0D10 0 14px, #10090B 14px 28px); color:var(--fumaca-400); }
+.foto-mestra--escura b{ color:var(--branco); }
+
+/* Linha de identificação e aviso de marcas fictícias */
+.id-projeta,.rodape-ficticias{ display:block; font:400 var(--s-legenda)/1.5 var(--font-texto); color:var(--f-legenda); }
+
+/* ---------- 6. Estrutura do slide ---------- */
+.deck{ position:relative; }
+.slide{ position:relative; display:flex; flex-direction:column; padding:28px var(--m) 32px; }
+.slide > *{ position:relative; z-index:1; }
+.slide > .grade-lanc{ position:absolute; z-index:0; }
+aside.notas{ display:none; }
+
+/* Fólio: Pavio + nome do material à esquerda, número e capítulo à direita, Fio com Fenda embaixo */
+.s-folio{
+  display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:6px 24px; margin-bottom:32px;
+  font:600 var(--s-folio)/1.3 var(--font-texto); letter-spacing:var(--track-sobre); text-transform:uppercase; color:var(--f-apoio);
+}
+.s-folio > span:first-child{ display:inline-flex; align-items:center; gap:.75em; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.s-folio > span:first-child::before{ content:""; width:16px; height:2px; flex:none; background:var(--ignicao); }
+.campo-ignicao .s-folio > span:first-child::before{ background:var(--noite); }
+.s-folio > span:nth-child(2){ white-space:nowrap; text-align:right; }
+.s-folio b{ font-weight:700; color:var(--f-titulo); }
+.s-folio > .fio-fenda{ grid-column:1 / -1; margin-top:8px; }
+
+/* Rodapé: marca reduzida à esquerda, nota ao centro, número do slide à direita */
+.s-rodape{ display:flex; align-items:center; justify-content:space-between; gap:24px; margin-top:36px; padding-top:14px; border-top:1px solid var(--f-fio); }
+.s-rodape .marca{ width:110px; }
+.s-rodape-nota{ flex:1 1 auto; min-width:0; font:400 var(--s-legenda)/1.4 var(--font-texto); color:var(--f-legenda); }
+.s-num{ font:600 var(--s-folio)/1 var(--font-texto); letter-spacing:.14em; font-variant-numeric:tabular-nums; color:var(--f-apoio); white-space:nowrap; }
+.s-num b{ color:var(--f-titulo); }
+.s-corpo{ flex:1 1 auto; min-height:0; display:flex; flex-direction:column; }
+.s-cab .pavio + *{ margin-top:18px; }
+.s-cab .s-apoio{ margin-top:18px; }
+
+/* ---------- 7. Os quinze tipos ---------- */
+/* 1 · Capa */
+.capa-topo{ display:flex; flex-wrap:wrap; justify-content:space-between; align-items:flex-start; gap:16px 24px; }
+.capa .marca-capa{ width:min(100%,300px); }
+.capa-titulos{ margin-top:48px; }
+.capa-titulos .s-display{ margin-top:18px; }
+.capa-titulos .s-apoio{ margin-top:20px; }
+.capa-meta{ display:grid; grid-template-columns:minmax(0,1fr); gap:14px; margin-top:28px; }
+.capa-meta dt{ font:600 var(--s-folio)/1.3 var(--font-texto); letter-spacing:.2em; text-transform:uppercase; color:var(--f-legenda); }
+.capa-meta dd{ margin-top:4px; font:500 var(--s-texto)/1.35 var(--font-texto); color:var(--f-titulo); }
+.capa-rota{ margin-top:32px; }
+.capa-rodape{ display:flex; align-items:center; justify-content:space-between; gap:24px; margin-top:32px; }
+.capa-rodape .fio-fenda{ flex:1 1 auto; }
+.capa-site{ font:600 var(--s-folio)/1 var(--font-texto); letter-spacing:.3em; text-transform:uppercase; color:var(--f-apoio); white-space:nowrap; }
+
+/* 2 · Abertura de capítulo */
+.capitulo-num{ font-size:var(--s-capnum,150px); margin:8px 0 0 -4px; }
+.capitulo-texto{ margin-top:24px; }
+.capitulo-texto .s-titulo{ margin-top:16px; }
+.capitulo-texto .s-apoio{ margin-top:18px; }
+.capitulo-indice{ margin-top:28px; display:grid; gap:10px; }
+.capitulo-indice li{ display:flex; align-items:baseline; gap:14px; font:500 var(--s-texto)/1.35 var(--font-texto); color:var(--f-apoio); }
+.capitulo-indice li span{ font:600 var(--s-legenda)/1 var(--font-texto); letter-spacing:.14em; color:var(--f-legenda); font-variant-numeric:tabular-nums; }
+.capitulo-indice li.atual{ color:var(--f-titulo); }
+.capitulo-indice li.atual span{ color:var(--f-enfase); }
+
+/* 3 · Frase (página de virada em campo Ignição) */
+.frase-corpo{ justify-content:center; }
+.frase-corpo .s-frase{ margin-top:22px; max-width:15em; }
+.frase-assina{ margin-top:30px; font:600 var(--s-apoio)/1.4 var(--font-texto); color:var(--branco); max-width:32em; }
+.frase-simbolo{ display:none; }
+.frase .s-frase em{ display:block; }
+
+/* 4 · Comparação */
+.compara-grade{ display:grid; grid-template-columns:minmax(0,1fr); gap:18px; margin-top:28px; }
+.compara-lado{ padding:26px 24px; border-radius:var(--r-cartao-g); background:var(--f-painel); border:1px solid var(--f-fio); }
+.compara-sim{ background:var(--noite); border:2px solid var(--ignicao); }
+.compara-cab{ display:flex; align-items:center; justify-content:space-between; gap:14px; padding-bottom:16px; border-bottom:1px solid var(--f-fio-forte); }
+.compara-veredito{ font:600 var(--s-legenda)/1.2 var(--font-texto); letter-spacing:.12em; text-transform:uppercase; }
+.compara-nao .compara-veredito{ color:var(--f-neg); }
+.compara-nao .compara-veredito::before{ -webkit-mask-image:var(--ic-x); mask-image:var(--ic-x); }
+.compara-sim .compara-veredito{ color:var(--f-ok); }
+.compara-lista{ margin-top:6px; }
+.compara-lista li{ display:grid; grid-template-columns:22px minmax(0,1fr); gap:14px; padding:14px 0; border-bottom:1px solid var(--f-fio); font-size:var(--s-texto); line-height:1.4; color:var(--f-texto); }
+.compara-lista li:last-child{ border-bottom:0; }
+.compara-nao .compara-lista li::before{ content:""; width:8px; height:8px; margin:.55em 0 0 6px; border-radius:50%; background:var(--fumaca-600); }
+.compara-sim .compara-lista li::before{ content:""; width:.8em; height:.7em; margin-top:.4em; background:var(--ignicao); -webkit-mask:var(--seta-a) center/contain no-repeat; mask:var(--seta-a) center/contain no-repeat; transform:rotate(90deg); }
+.compara-seta{ display:grid; place-items:center; color:var(--f-apoio); }
+.compara-seta .seta-a{ width:28px; height:24px; background:var(--f-apoio); transform:rotate(180deg); }
+
+/* 5 · Diagnóstico (texto e imagem com Mira) */
+.diag-grade{ display:grid; grid-template-columns:minmax(0,1fr); gap:28px; }
+.diag-texto .lista-seta{ margin-top:26px; }
+.diag-texto .pilulas{ margin-top:24px; }
+.diag-desafios-rot{ margin-top:26px; font:600 var(--s-folio)/1.3 var(--font-texto); letter-spacing:.2em; text-transform:uppercase; color:var(--f-legenda); }
+.diag-desafios-rot + .pilulas{ margin-top:12px; }
+.diag-quadro{ display:flex; flex-direction:column; gap:14px; }
+.diag-quadro .mira{ flex:1 1 auto; min-height:280px; }
+.diag-quadro .foto-mestra{ border-radius:8px; }
+
+/* 6 · Processo Delivery Blindado */
+.processo-grade{ display:grid; grid-template-columns:minmax(0,1fr); gap:44px 18px; margin-top:40px; }
+.etapa{ position:relative; padding:44px 24px 26px; border-radius:var(--r-cartao); background:var(--f-painel); border:1px solid var(--f-fio); }
+.etapa.anel{ border-color:transparent; background:var(--superficie-alta); }
+.etapa .contagem{ position:absolute; left:20px; top:0; transform:translateY(-42%); font-size:var(--s-etapa,64px); }
+.etapa-rot{ display:flex; align-items:center; justify-content:space-between; gap:10px; font:600 var(--s-folio)/1.3 var(--font-texto); letter-spacing:.24em; text-transform:uppercase; color:var(--f-legenda); }
+.etapa-t{ margin-top:14px; font-family:var(--font-titulo); font-stretch:var(--largo); font-weight:700; font-size:var(--s-sub); line-height:1; letter-spacing:-.05em; text-transform:uppercase; color:var(--f-titulo); }
+.etapa-d{ margin-top:14px; font-size:var(--s-texto); line-height:1.45; color:var(--f-apoio); }
+.processo-pe{ margin-top:28px; }
+
+/* 7 · Três colunas (serviços) */
+.colunas-grade{ display:grid; grid-template-columns:minmax(0,1fr); gap:16px; margin-top:32px; }
+.colunas-grade .cartao{ display:grid; grid-template-columns:auto minmax(0,1fr); gap:6px 20px; align-content:start; }
+.colunas-grade .cartao__icone{ grid-row:span 2; }
+
+/* 8 · Número grande */
+.numero-grade{ display:grid; grid-template-columns:minmax(0,1fr); gap:32px; margin-top:8px; align-items:end; }
+.numero-principal .pavio{ margin-bottom:12px; }
+.numero-lado{ display:flex; flex-direction:column; gap:22px; }
+.numero-conclusao{ font-family:var(--font-titulo); font-stretch:var(--largo); font-weight:700; font-size:var(--s-sub); line-height:1.06; letter-spacing:-.045em; text-transform:uppercase; color:var(--f-titulo); text-wrap:balance; }
+.numero-lado .contador{ padding-top:22px; border-top:1px solid var(--f-fio); }
+.numero-lado .contador::before{ top:28px; }
+.numero-lado .contador__valor{ font-size:calc(var(--s-num) * .42); }
+.numero-lado .contador__rotulo{ font-size:var(--s-legenda); }
+
+/* 9 · Dados com pviz */
+.dados-grade{ display:grid; grid-template-columns:minmax(0,1fr); gap:28px; margin-top:24px; }
+.dados-lado{ display:flex; flex-direction:column; gap:18px; }
+.dados-grafico{ min-width:0; }
+
+/* 10 · Faixa de Telemetria */
+.telemetria{ --cols:2; display:grid; grid-template-columns:repeat(var(--cols),minmax(0,1fr)); margin-top:32px; border-radius:var(--r-cartao); background:var(--ignicao); color:var(--branco); overflow:hidden; }
+.telemetria__item{ display:flex; flex-direction:column; gap:14px; min-width:0; padding:24px 20px; }
+.telemetria__item:nth-child(even){ box-shadow:inset 2px 0 0 var(--divisa); }
+.telemetria__item:nth-child(n+3){ border-top:2px solid var(--divisa); }
+.telemetria__valor{ position:relative; display:block; width:2.2em; height:.9em; font-family:var(--font-titulo); font-stretch:var(--largo); font-weight:600; font-size:calc(var(--s-num) * .56); line-height:.9; }
+.telemetria__valor::after{ content:""; position:absolute; left:0; right:0; top:50%; height:.07em; min-height:3px; background:rgba(255,255,255,.72); }
+.telemetria__reserva{ font:600 var(--s-legenda)/1.3 var(--font-texto); letter-spacing:.06em; color:var(--branco); }
+.telemetria__rotulo{ font:600 var(--s-texto)/1.3 var(--font-texto); letter-spacing:.1em; text-transform:uppercase; color:var(--branco); }
+.telemetria__regua{ grid-column:1 / -1; padding:16px 20px; border-top:2px solid var(--divisa); font:600 var(--s-legenda)/1.45 var(--font-texto); color:var(--branco); }
+.selos{ display:flex; flex-wrap:wrap; align-items:center; gap:12px 14px; margin-top:24px; }
+.selos-rot{ font:600 var(--s-folio)/1.3 var(--font-texto); letter-spacing:.2em; text-transform:uppercase; color:var(--f-legenda); margin-right:6px; }
+
+/* 11 · Case com fonte */
+.case-grade{ display:grid; grid-template-columns:minmax(0,1fr); gap:28px; }
+.case-moldura{ --mo-t:10px; aspect-ratio:4/3; }
+.case-moldura .moldura-o__miolo{ display:grid; }
+.case-placa{ position:absolute; left:18px; top:18px; z-index:2; font-size:22px; }
+.case-texto{ display:flex; flex-direction:column; gap:16px; min-width:0; }
+.case-texto .s-sub{ font-size:var(--s-titulo-case,28px); }
+.case-autoriza{ display:flex; flex-wrap:wrap; gap:8px 16px; }
+
+/* 12 · Equipe */
+.equipe-grade{ display:grid; grid-template-columns:minmax(0,1fr); gap:18px; margin-top:32px; }
+.pessoa{ display:flex; flex-direction:column; gap:16px; padding:18px; border-radius:var(--r-cartao); background:var(--f-painel); border:1px solid var(--f-fio); }
+.pessoa .foto-mestra{ aspect-ratio:4/3; height:auto; min-height:0; border-radius:14px; }
+.pessoa-ic{ position:absolute; left:50%; top:42%; transform:translate(-50%,-50%); width:56px; height:56px; color:var(--fumaca-400); }
+.pessoa-nome{ font-family:var(--font-titulo); font-stretch:var(--largo); font-weight:700; font-size:var(--s-sub); line-height:1; letter-spacing:-.05em; text-transform:uppercase; color:var(--f-titulo); }
+.pessoa-cargo{ margin-top:8px; font:600 var(--s-legenda)/1.3 var(--font-texto); letter-spacing:.14em; text-transform:uppercase; color:var(--f-enfase); }
+.pessoa-papel{ margin-top:10px; font-size:var(--s-texto); line-height:1.45; color:var(--f-apoio); }
+
+/* 13 · Cronograma */
+.cronograma-grafico{ margin-top:30px; min-width:0; }
+
+/* 14 · Proposta e investimento */
+.planos{ display:grid; grid-template-columns:minmax(0,1fr); gap:18px; margin-top:32px; align-items:stretch; }
+.plano{ position:relative; display:flex; flex-direction:column; gap:16px; padding:28px 26px; border-radius:var(--r-cartao-g); background:var(--f-painel); border:1px solid var(--f-fio); }
+.plano.anel{ border-color:transparent; background:var(--superficie-alta); }
+.plano-rot{ display:flex; align-items:center; justify-content:space-between; gap:10px; font:600 var(--s-folio)/1.3 var(--font-texto); letter-spacing:.24em; text-transform:uppercase; color:var(--f-legenda); }
+.plano-escolhido{ display:inline-flex; align-items:center; gap:8px; color:var(--f-enfase); letter-spacing:.14em; }
+.plano-nome{ font-family:var(--font-titulo); font-stretch:var(--largo); font-weight:700; font-size:var(--s-sub); line-height:1; letter-spacing:-.05em; text-transform:uppercase; color:var(--f-titulo); }
+.plano-preco{ display:flex; align-items:baseline; flex-wrap:wrap; gap:6px 10px; padding:16px 0; border-block:1px solid var(--f-fio); }
+.plano-preco b{ font-family:var(--font-titulo); font-stretch:var(--largo); font-weight:500; font-size:calc(var(--s-sub) * 1.15); line-height:1; letter-spacing:-.05em; color:var(--f-titulo); white-space:nowrap; }
+.plano-preco span{ font:500 var(--s-legenda)/1.3 var(--font-texto); color:var(--f-apoio); }
+.plano .lista-seta{ gap:10px; }
+.plano .lista-seta li{ font-size:var(--s-plano,var(--s-texto)); }
+.planos-pe{ margin-top:24px; }
+
+/* 15 · Fechamento */
+.fechamento .s-display{ max-width:13em; margin-top:18px; }
+.fechamento-acao{ margin-top:32px; }
+.canais{ display:grid; grid-template-columns:minmax(0,1fr); gap:14px; margin-top:36px; }
+.canal{ display:flex; align-items:center; gap:14px; min-width:0; }
+.canal .ic{ color:var(--chama); }
+.canal dt{ font:600 var(--s-folio)/1.3 var(--font-texto); letter-spacing:.2em; text-transform:uppercase; color:var(--f-legenda); }
+.canal dd{ font:500 var(--s-texto)/1.35 var(--font-texto); color:var(--f-titulo); }
+.fechamento-base{ display:flex; flex-direction:column-reverse; align-items:flex-start; gap:24px; margin-top:36px; padding-top:24px; border-top:1px solid var(--f-fio); }
+.fechamento-base .marca{ width:min(100%,300px); }
+
+/* ---------- 8. Palco de 1440 × 900 (tela com mais de 640 × 500 px, e impressão) ----------
+   Grade: margem de 96, 12 colunas de 80 px, calha de 24 (1 T = 8 px). Fólio em y 40,
+   conteúdo entre y 132 e y 796, rodapé de y 820 a y 864. */
+@media print, screen and (min-width:641px) and (min-height:501px){
+  .deck{
+    --m:96px;
+    --s-display:100px; --s-titulo:60px; --s-sub:30px; --s-apoio:24px; --s-texto:20px;
+    --s-legenda:16px; --s-folio:13px; --s-num:220px; --s-frase:92px; --s-botao:18px; --s-pilula:14px; --s-cartao:24px;
+  }
+  .slide{ width:1440px; height:900px; padding:132px var(--m) 104px; overflow:hidden; }
+  .s-folio{ position:absolute; left:var(--m); right:var(--m); top:40px; margin:0; }
+  .s-rodape{ position:absolute; left:var(--m); right:var(--m); bottom:36px; height:44px; margin:0; padding:0; border-top:0; }
+  .s-rodape .s-rodape-nota{ padding-right:120px; }
+
+  /* capa: texto nas colunas 1 a 7, a Trajetória a partir da coluna 8 */
+  .capa{ padding-top:64px; padding-bottom:64px; }
+  .capa .marca-capa{ width:340px; }
+  .capa .coassinatura{ --co-h:30px; }
+  .capa-miolo{ flex:1 1 auto; display:grid; grid-template-columns:688px minmax(0,1fr); column-gap:72px; align-items:end; }
+  .capa-titulos{ margin:0 0 4px; }
+  .capa-meta{ grid-template-columns:repeat(3,minmax(0,max-content)); column-gap:0; margin-top:40px; }
+  .capa-meta > div{ padding-right:32px; }
+  .capa-meta > div + div{ padding-left:32px; border-left:1px solid var(--f-fio); }
+  .capa-rota{ margin:0 0 8px; }
+  .capa-rodape{ margin-top:44px; padding-right:110px; }
+
+  .capitulo-num{ position:absolute; left:72px; bottom:150px; margin:0; font-size:330px; }
+  .capitulo-texto{ position:absolute; left:720px; right:var(--m); bottom:164px; margin:0; }
+  .capitulo-indice{ margin-top:36px; }
+
+  .frase .s-frase{ max-width:14em; }
+  .frase-simbolo{ display:block; position:absolute; right:var(--m); top:132px; width:96px; opacity:1; }
+
+  .compara-grade{ grid-template-columns:minmax(0,1fr) 64px minmax(0,1fr); gap:0; margin-top:44px; align-items:stretch; }
+  .compara-lado{ padding:30px 32px 22px; }
+  .compara-seta .seta-a{ transform:rotate(90deg); }
+
+  .diag-grade{ flex:1 1 auto; grid-template-columns:688px minmax(0,1fr); column-gap:72px; align-items:stretch; }
+  .diag-texto{ display:flex; flex-direction:column; justify-content:center; }
+  .diag-quadro .mira{ min-height:0; }
+
+  .processo-grade{ grid-template-columns:repeat(4,minmax(0,1fr)); margin-top:auto; }
+  .processo .s-corpo{ justify-content:flex-start; }
+  .etapa{ padding:60px 26px 30px; min-height:290px; }
+  .etapa .contagem{ --s-etapa:84px; }
+  .processo-pe{ margin-top:28px; }
+
+  .colunas-grade{ grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px; margin-top:auto; }
+  .colunas-grade .cartao{ display:flex; flex-direction:column; gap:16px; min-height:228px; padding:28px 26px; }
+
+  .numero-grade{ flex:1 1 auto; grid-template-columns:760px minmax(0,1fr); column-gap:72px; margin-top:0; align-content:center; }
+  .numero-principal .contador__valor{ font-size:260px; }
+  .numero-lado{ padding-bottom:6px; }
+
+  .dados-grade{ flex:1 1 auto; grid-template-columns:400px minmax(0,1fr); column-gap:64px; margin-top:28px; align-items:center; }
+
+  .telemetria{ --cols:4; margin-top:auto; }
+  .telemetria__item{ padding:34px 30px; }
+  .telemetria__item + .telemetria__item{ box-shadow:inset 2px 0 0 var(--divisa); }
+  .telemetria__item:nth-child(n+3){ border-top:0; }
+  .telemetria__regua{ padding:18px 30px; }
+  .selos{ margin-top:28px; }
+
+  .case-grade{ flex:1 1 auto; grid-template-columns:520px minmax(0,1fr); column-gap:64px; align-items:stretch; }
+  .case-moldura{ --mo-t:12px; aspect-ratio:4/3; height:auto; align-self:center; }
+  .case-texto{ --s-titulo-case:44px; justify-content:center; }
+
+  .equipe-grade{ grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; margin-top:auto; }
+  .pessoa{ padding:20px 20px 26px; }
+  .pessoa .foto-mestra{ aspect-ratio:16/10; }
+
+  .cronograma-grafico{ margin-top:auto; }
+
+  .planos{ grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; margin-top:auto; }
+  .plano{ --s-plano:18px; padding:30px 30px 28px; }
+
+  .fechamento{ padding-top:64px; }
+  .fechamento .s-display{ font-size:88px; max-width:12.5em; }
+  .fechamento-texto{ margin-top:52px; }
+  .canais{ grid-template-columns:repeat(4,minmax(0,max-content)); gap:0; margin-top:auto; }
+  .canal{ padding-right:34px; }
+  .canal + .canal{ padding-left:34px; border-left:1px solid var(--f-fio); }
+  .fechamento-base{ flex-direction:row; justify-content:space-between; align-items:flex-end; gap:48px; margin-top:28px; }
+  .fechamento-base .marca{ width:300px; flex:none; }
+  .fechamento-base .id-projeta{ max-width:40em; text-align:right; }
+}
+
+/* ---------- 9. Interface: progresso, contador, painel de notas ---------- */
+.progresso,.deck-contador,.painel-notas{ display:none; }
+.painel-notas .rotulo-painel{ display:block; font:600 12px/1.4 var(--font-texto); letter-spacing:.24em; text-transform:uppercase; color:var(--chama); }
+.painel-cab{ display:flex; align-items:baseline; justify-content:space-between; gap:16px; padding-bottom:18px; border-bottom:1px solid var(--fio-escuro); }
+.painel-num{ font:500 30px/1 var(--font-titulo); font-stretch:var(--largo); letter-spacing:-.04em; color:var(--branco); font-variant-numeric:tabular-nums; }
+.painel-num span{ color:var(--fumaca-400); font-size:18px; }
+.painel-tit{ margin-top:22px; font:700 22px/1.1 var(--font-titulo); font-stretch:var(--largo); letter-spacing:-.04em; text-transform:uppercase; color:var(--branco); }
+.painel-txt{ margin-top:16px; flex:1 1 auto; overflow:auto; font-size:16px; line-height:1.6; color:var(--fumaca-200); }
+.painel-txt p + p{ margin-top:12px; }
+.painel-prox{ margin-top:16px; padding-top:16px; border-top:1px solid var(--fio-escuro); font-size:14px; line-height:1.5; color:var(--fumaca-400); }
+.painel-prox b{ color:var(--branco); }
+.painel-teclas{ margin-top:14px; font-size:13px; line-height:1.7; color:var(--fumaca-400); }
+.painel-teclas kbd{ display:inline-block; min-width:1.9em; padding:0 .45em; border:1px solid var(--fio-escuro); border-bottom-width:2px; border-radius:6px; font:600 12px/1.6 var(--font-texto); color:var(--branco); text-align:center; }
+
+/* ---------- 10. Modo palco (tela com mais de 640 × 500 px, com JavaScript) ---------- */
+@media screen and (min-width:641px) and (min-height:501px){
+  html.js,html.js body{ height:100%; }
+  html.js body{ background:#000000; }
+  html.js .palco-deck{ position:fixed; inset:0; overflow:hidden; background:#000000; }
+  html.js.com-notas .palco-deck{ right:380px; }
+  html.js .deck{ position:absolute; left:50%; top:50%; width:1440px; height:900px; transform:translate(-50%,-50%) scale(var(--k,1)); transform-origin:50% 50%; }
+  html.js .slide{ position:absolute; inset:0; opacity:0; visibility:hidden; transition:opacity .25s ease,visibility 0s linear .25s; }
+  html.js .slide.ativo{ opacity:1; visibility:visible; transition:opacity .25s ease; }
+  html.js .s-num{ visibility:hidden; }
+  html.js .progresso{ display:block; position:absolute; left:0; top:0; right:0; height:3px; z-index:5; pointer-events:none; }
+  html.js .progresso span{ display:block; height:100%; width:100%; background:var(--ignicao); transform-origin:0 50%; transform:scaleX(var(--p,.1)); transition:transform .25s ease; }
+  html.js .deck[data-tom="ignicao"] .progresso span{ background:var(--noite); }
+  html.js .deck-contador{
+    display:flex; align-items:center; gap:.5em; position:absolute; right:96px; bottom:36px; height:44px; z-index:5; pointer-events:none; margin:0;
+    font:600 13px/1 var(--font-texto); letter-spacing:.14em; font-variant-numeric:tabular-nums; color:var(--fumaca-400);
+  }
+  html.js .deck-contador b{ font-weight:600; color:var(--branco); }
+  html.js .deck[data-tom="branco"] .deck-contador{ color:var(--fumaca-600); }
+  html.js .deck[data-tom="branco"] .deck-contador b{ color:var(--noite); }
+  html.js .deck[data-tom="ignicao"] .deck-contador,html.js .deck[data-tom="ignicao"] .deck-contador b{ color:var(--branco); }
+  html.js .painel-notas{
+    display:flex; flex-direction:column; position:fixed; top:0; right:0; bottom:0; width:380px; z-index:10;
+    background:var(--grafite); color:var(--fumaca-200); border-left:2px solid var(--ignicao); padding:32px 28px 28px;
+    transform:translateX(100%); visibility:hidden;
+  }
+  html.js.com-notas .painel-notas{ transform:none; visibility:visible; }
+}
+@media screen and (min-width:641px) and (min-height:501px) and (prefers-reduced-motion:reduce){
+  html.js .slide,html.js .slide.ativo,html.js .progresso span{ transition:none; }
+}
+
+/* ---------- 11. Celular (até 640 px de largura, ou deitado, até 500 de altura): slides empilhados ---------- */
+@media screen and (max-width:640px), screen and (max-height:500px){
+  .slide + .slide{ border-top:1px solid var(--fio-escuro); }
+  .s-folio{ margin-bottom:28px; }
+  .s-folio > span:first-child{ display:none; }
+  .s-folio{ grid-template-columns:minmax(0,1fr); text-align:right; }
+  .s-folio > span:nth-child(2){ white-space:normal; }
+  .capitulo-indice{ display:none; }
+  .capitulo-num{ font-size:clamp(90px, 32vw, 150px); }
+  .numero-principal .contador__valor{ font-size:clamp(96px, 30vw, 150px); }
+  .telemetria__valor{ font-size:64px; }
+  .case-texto .s-sub{ font-size:26px; }
+  .botao{ width:100%; }
+  .coassinatura{ --co-h:16px; }
+  /* cartões de seis frentes: título longo de uma palavra cabe no cartão */
+  .colunas-grade .cartao__titulo{ font-size:clamp(18px, 5.6vw, 24px); overflow-wrap:anywhere; hyphens:auto; }
+  /* case: a moldura cresce com o conteúdo e a legenda fica longe da curva do O */
+  .case-moldura{ aspect-ratio:auto; }
+  .case-moldura .moldura-o__miolo{ min-height:fit-content; }
+  .case-moldura .foto-mestra{ min-height:240px; padding:56px 30px 44px; }
+  /* rodapé: logo e fólio na mesma linha, nota em largura total por baixo */
+  .s-rodape{ flex-wrap:wrap; row-gap:8px; }
+  .s-rodape .s-num{ margin-left:auto; }
+  .s-rodape-nota{ order:3; flex-basis:100%; }
+  .s-rodape-nota:empty{ display:none; }
+}
+@media screen and (max-width:380px){
+  .deck{ --s-display:34px; --s-titulo:28px; --s-frase:32px; --s-sub:20px; }
+  .colunas-grade .cartao{ grid-template-columns:minmax(0,1fr); gap:14px; padding:24px 22px; }
+  .colunas-grade .cartao__icone{ grid-row:auto; }
+  .telemetria{ --cols:1; }
+  .telemetria__item:nth-child(even){ box-shadow:none; }
+  .telemetria__item + .telemetria__item{ border-top:2px solid var(--divisa); }
+}
+
+/* ---------- 12. Movimento reduzido ---------- */
+@media (prefers-reduced-motion:reduce){
+  .anel--gira::after,.chama--pulsa{ animation:none; }
+}
+
+/* ---------- 13. Impressão e PDF: 1440 × 900, sem margens, um slide por página ---------- */
+@page{ size:1440px 900px; margin:0; }
+@media print{
+  html,body{ background:#050203; margin:0; padding:0; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  .palco-deck,.deck{ position:static; transform:none; width:auto; height:auto; }
+  .slide{ position:relative; width:1440px; height:900px; opacity:1!important; visibility:visible!important; transform:none; break-after:page; page-break-after:always; break-inside:avoid; border:0!important; }
+  .deck > section.slide:last-of-type{ break-after:auto; page-break-after:auto; }
+  .progresso,.deck-contador,.painel-notas,aside.notas{ display:none!important; }
+  .s-num{ visibility:visible!important; }
+  *,*::before,*::after{ transition:none!important; animation:none!important; }
+}
+</style>
+</head>
+<body>
+
+<!-- Ícones Lucide (traço 2, ponta redonda), usados por <use href="#i-nome"> -->
+<svg class="sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-megafone" viewBox="0 0 24 24"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></symbol>
+  <symbol id="i-claquete" viewBox="0 0 24 24"><path d="M20.2 6 3 11l-.9-2.4c-.3-1.1.3-2.2 1.3-2.5l13.5-4c1.1-.3 2.2.3 2.5 1.3Z"/><path d="m6.2 5.3 3.1 3.9"/><path d="m12.4 3.4 3.1 4"/><path d="M3 11h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/></symbol>
+  <symbol id="i-pino" viewBox="0 0 24 24"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></symbol>
+  <symbol id="i-livro" viewBox="0 0 24 24"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></symbol>
+  <symbol id="i-grafico" viewBox="0 0 24 24"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></symbol>
+  <symbol id="i-alvo" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+  <symbol id="i-mensagem" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></symbol>
+  <symbol id="i-email" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></symbol>
+  <symbol id="i-arroba" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/></symbol>
+  <symbol id="i-globo" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></symbol>
+  <symbol id="i-pessoa" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+  <symbol id="i-scan" viewBox="0 0 24 24"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="12" r="3"/><path d="m16 16-1.9-1.9"/></symbol>
+</svg>
+
+<div class="palco-deck" id="palco">
+<main class="deck" id="deck" data-tom="noite" aria-label="Apresentação Projeta Food">
+
+  <!-- ===================== 1 · CAPA ===================== -->
+  <section class="slide capa campo-noite brasa ativo" id="slide-1" data-tom="noite" aria-roledescription="slide" aria-label="1 de 15: Atenção que vira pedido">
+    <div class="capa-topo">
+      <img class="marca marca-capa so-proprio" src="assets/brand/projeta-completa-negativa.svg" alt="Projeta Food" width="340" height="101">
+      <div class="coassinatura so-coass" data-cliente="forno-vivo" aria-label="Forno Vivo e Projeta Food">
+        <span class="placa-cliente"><span class="marca-ficticia">Forno <b>Vivo</b></span></span>
+        <span class="fio-fenda fio-fenda--v" aria-hidden="true"></span>
+        <img class="coassinatura__projeta" src="assets/brand/projeta-reduzida-negativa.svg" alt="Projeta Food" width="147" height="34">
+      </div>
+      <span class="pavio">Diagnóstico gratuito</span>
+    </div>
+    <div class="capa-miolo">
+      <div class="capa-titulos">
+        <p class="pavio so-proprio">Apresentação · [nome do restaurante]</p>
+        <p class="pavio so-coass">Plano de crescimento · camada de gestão</p>
+        <h1 class="s-display so-proprio">Atenção que vira <em>pedido.</em></h1>
+        <h1 class="s-display so-coass">Forno Vivo: os próximos <em>90 dias.</em></h1>
+        <p class="s-apoio">Como a Projeta Food organiza a base do seu delivery antes de acelerar: canais, cardápio próprio, rastreamento e dados.</p>
+        <dl class="capa-meta">
+          <div><dt>Para</dt><dd>[nome do restaurante]</dd></div>
+          <div><dt>Data</dt><dd>[dd/mm/aaaa]</dd></div>
+          <div><dt>Apresentado por</dt><dd>[nome e cargo]</dd></div>
+        </dl>
+      </div>
+      <div class="capa-rota" data-amplia data-pforms='{"forma":"trajetoria","marcos":["Diagnóstico","Estratégia","Execução","Otimização"],"aria":"Trajetória do método Delivery Blindado em quatro etapas: Diagnóstico, Estratégia, Execução e Otimização"}'></div>
+    </div>
+    <div class="capa-rodape">
+      <div class="fio-fenda" aria-hidden="true"><i class="seta-a"></i></div>
+      <span class="capa-site">projetafood.com.br</span>
+    </div>
+    <p class="s-num so-leitor"><b>01</b> / 15</p>
+    <aside class="notas">
+      <p>Capa da Projeta: Noite com a Brasa Controlada no canto superior direito (de onde a Trajetória chega) e a marca completa em arquivo, nunca redigitada. O título é a assinatura "Atenção que vira pedido." ou uma frase do pedido do cliente; a palavra final vai em Ignição.</p>
+      <p>Troque os colchetes: nome do restaurante, data e quem apresenta. A Trajetória é a única da apresentação neste slide: ela nasce tracejada (a base sendo organizada) e sobe em Ignição até a Seta A.</p>
+      <p>Tecla C liga o modo co-assinado (camada 2): o lockup do restaurante substitui a marca completa e o nome do restaurante vira o título. Use quando a apresentação for de gestão para um cliente que já é da casa.</p>
+    </aside>
+  </section>
+
+  <!-- ===================== 2 · ABERTURA DE CAPÍTULO ===================== -->
+  <section class="slide capitulo campo-preto" id="slide-2" data-tom="noite" aria-roledescription="slide" aria-label="2 de 15: Primeiro a base. Depois a subida.">
+    <div class="s-folio"><span>Projeta Food · Apresentação</span><span><b>01</b> · O ponto de partida</span><div class="fio-fenda" aria-hidden="true"></div></div>
+    <span class="contagem capitulo-num" aria-hidden="true"><span>01</span></span>
+    <div class="capitulo-texto">
+      <p class="pavio">Capítulo 01</p>
+      <h2 class="s-titulo">Primeiro a base. <em>Depois a subida.</em></h2>
+      <p class="s-apoio">Antes de investir em anúncio, a gente olha o chão: canais, taxas, cardápio próprio e o que já está sendo medido.</p>
+      <ol class="capitulo-indice">
+        <li class="atual"><span>01</span>O ponto de partida</li>
+        <li><span>02</span>O método Delivery Blindado</li>
+        <li><span>03</span>Prova, equipe e próximos passos</li>
+      </ol>
+    </div>
+    <div class="s-rodape"><img class="marca" src="assets/brand/projeta-reduzida-negativa.svg" alt="Projeta Food" width="110" height="26"><span class="s-rodape-nota"></span><p class="s-num"><b>02</b> / 15</p></div>
+    <aside class="notas">
+      <p>Abertura de capítulo: campo Preto, a Contagem gigante em Ignição (Saira 600 esticada 1,5 vez, sempre texto, dois dígitos) e o título com a frase-guia do capítulo. Duplique este slide para os capítulos 02 e 03 e mova a marca de "atual" no índice.</p>
+      <p>Um capítulo a cada quatro a seis slides é o ritmo certo. A Contagem nunca vira imagem nem curva.</p>
+    </aside>
+  </section>
+
+  <!-- ===================== 3 · FRASE (página de virada) ===================== -->
+  <section class="slide frase campo-ignicao" id="slide-3" data-tom="ignicao" aria-roledescription="slide" aria-label="3 de 15: Blindar antes de acelerar. Medir antes de prometer.">
+    <div class="s-folio"><span>Projeta Food · Apresentação</span><span><b>01</b> · A frase do método</span><div class="fio-fenda" aria-hidden="true"></div></div>
+    <img class="frase-simbolo" src="assets/brand/projeta-simbolo-branca.svg" alt="" width="96" height="142">
+    <div class="s-corpo frase-corpo">
+      <p class="pavio">Delivery Blindado</p>
+      <p class="s-frase acento">Blindar antes de acelerar. <em>Medir antes de prometer.</em></p>
+      <p class="frase-assina">O tráfego pago entra como combustível quando a base aguenta a subida.</p>
+    </div>
+    <div class="s-rodape"><img class="marca" src="assets/brand/projeta-reduzida-branca.svg" alt="Projeta Food" width="110" height="26"><span class="s-rodape-nota"></span><p class="s-num"><b>03</b> / 15</p></div>
+    <aside class="notas">
+      <p>Página de virada: é a exceção nomeada da Lei 2, o campo Ignição inteiro. Uma por apresentação, de preferência só esta; nunca dois slides vermelhos seguidos.</p>
+      <p>Sobre a Ignição, só Branco (peso 600 e 16 px no mínimo) e Noite. A palavra decisiva do título vai em Noite. A marca entra na versão branca de uma cor.</p>
+      <p>Frases que cabem aqui: "Blindar antes de acelerar. Medir antes de prometer.", "A gente monta a plataforma. O seu restaurante decola.", "Primeiro a base. Depois a subida."</p>
+    </aside>
+  </section>
+
+  <!-- ===================== 4 · COMPARAÇÃO ===================== -->
+  <section class="slide compara campo-grafite" id="slide-4" data-tom="noite" aria-roledescription="slide" aria-label="4 de 15: Venda solta não vira previsibilidade">
+    <div class="s-folio"><span>Projeta Food · Apresentação</span><span><b>01</b> · O ponto de partida</span><div class="fio-fenda" aria-hidden="true"></div></div>
+    <div class="s-cab">
+      <p class="pavio">O que trava o delivery</p>
+      <h2 class="s-titulo">Venda solta não vira <em>previsibilidade.</em></h2>
+    </div>
+    <div class="compara-grade">
+      <div class="compara-lado compara-nao">
+        <div class="compara-cab"><span class="compara-veredito situacao">Sem estrutura</span></div>
+        <ul class="compara-lista">
+          <li>Promoção solta, sem data para acabar nem conta de margem</li>
+          <li>Post bonito que não leva ao pedido</li>
+          <li>Anúncio sem rastreio: ninguém sabe o que voltou</li>
+          <li>Dependência do aplicativo, com taxa alta e pouco controle do cliente</li>
+        </ul>
+      </div>
+      <div class="compara-seta" aria-hidden="true"><i class="seta-a"></i></div>
+      <div class="compara-lado compara-sim">
+        <div class="compara-cab"><span class="compara-veredito situacao">Com plataforma</span></div>
+        <ul class="compara-lista">
+          <li>Calendário de ofertas com prazo, canal e margem calculada</li>
+          <li>Conteúdo que termina num botão de pedido</li>
+          <li>Cada pedido entra no painel, com data, base e fonte</li>
+          <li>Cardápio próprio equilibrando os canais, sem comissão</li>
+        </ul>
+      </div>
+    </div>
+    <div class="s-rodape"><img class="marca" src="assets/brand/projeta-reduzida-negativa.svg" alt="Projeta Food" width="110" height="26"><span class="s-rodape-nota">O aplicativo de delivery é um canal a equilibrar, não o vilão.</span><p class="s-num"><b>04</b> / 15</p></div>
+    <aside class="notas">
+      <p>Comparação: o lado "sem estrutura" em cartão Superfície com marcadores neutros e o ícone de X em rosa (o negativo da casa, longe do vermelho da marca); o lado "com plataforma" em contorno Ignição com a Seta A. O vermelho fica do lado da solução, nunca do problema.</p>
+      <p>O inimigo é a venda sem estrutura, nunca o aplicativo nem o concorrente: não cite marca de terceiro neste slide. Quatro linhas de cada lado, no máximo.</p>
+    </aside>
+  </section>
+
+  <!-- ===================== 5 · DIAGNÓSTICO (texto e imagem com Mira) ===================== -->
+  <section class="slide diagnostico campo-noite" id="slide-5" data-tom="noite" aria-roledescription="slide" aria-label="5 de 15: Onde a sua operação pode vender mais">
+    <div class="s-folio"><span>Projeta Food · Apresentação</span><span><b>01</b> · O ponto de partida</span><div class="fio-fenda" aria-hidden="true"></div></div>
+    <div class="diag-grade">
+      <div class="diag-texto">
+        <p class="pavio">Diagnóstico gratuito · 40 minutos</p>
+        <h2 class="s-titulo" style="margin-top:18px">Onde a sua operação pode <em>vender mais.</em></h2>
+        <ul class="lista-seta">
+          <li><b>Canais e taxas</b>quanto entra por cada canal e quanto fica com o restaurante</li>
+          <li><b>Cardápio próprio</b>se ele existe, se é encontrado e se converte</li>
+          <li><b>Rastreamento</b>o que já é medido e o que ninguém vê</li>
+        </ul>
+        <p class="diag-desafios-rot">O principal desafio que o dono marca no formulário</p>
+        <ul class="pilulas">
+          <li class="pilula">Dependência do iFood</li><li class="pilula">Margem baixa</li><li class="pilula">Poucas vendas</li>
+          <li class="pilula">Cardápio próprio</li><li class="pilula">Tráfego e anúncios</li><li class="pilula">Conteúdo e redes sociais</li>
+          <li class="pilula">Organização e processo</li>
+        </ul>
+      </div>
+      <figure class="diag-quadro">
+        <div class="mira mira--problema">
+          <div class="foto-mestra foto-mestra--escura"><b>[Print do painel do cliente]</b><span>Captura do aplicativo, do cardápio próprio ou do gerenciador de anúncios, com dados pessoais de clientes cobertos.</span></div>
+        </div>
+        <figcaption class="regua"><b>Mira em Ignição:</b> o enquadrado é o problema encontrado. Sem problema, a Mira fica em Branco a 70%.</figcaption>
+      </figure>
+    </div>
+    <div class="s-rodape"><img class="marca" src="assets/brand/projeta-reduzida-negativa.svg" alt="Projeta Food" width="110" height="26"><span class="s-rodape-nota"></span><p class="s-num"><b>05</b> / 15</p></div>
+    <aside class="notas">
+      <p>Texto e imagem com a Mira de Diagnóstico: só em peça de análise (diagnóstico, relatório, case), nunca em anúncio. O texto fica nas colunas 1 a 7; a imagem a partir da coluna 8.</p>
+      <p>Antes de colar qualquer print de painel, cubra nome, telefone e endereço de cliente final (Lei Geral de Proteção de Dados Pessoais, a LGPD). As sete opções de desafio são as do formulário do site; marque a que o dono escolheu.</p>
+    </aside>
+  </section>
+
+  <!-- ===================== 6 · PROCESSO DELIVERY BLINDADO ===================== -->
+  <section class="slide processo campo-noite" id="slide-6" data-tom="noite" aria-roledescription="slide" aria-label="6 de 15: Delivery Blindado em quatro etapas">
+    <div class="s-folio"><span>Projeta Food · Apresentação</span><span><b>02</b> · O método Delivery Blindado</span><div class="fio-fenda" aria-hidden="true"></div></div>
+    <div class="s-cab">
+      <p class="pavio">O método</p>
+      <h2 class="s-titulo">Delivery Blindado: <em>quatro etapas.</em></h2>
+    </div>
+    <div class="s-corpo">
+      <ol class="processo-grade">
+        <li class="etapa anel anel--gira">
+          <span class="contagem" aria-hidden="true"><span>01</span></span>
+          <p class="etapa-rot">Etapa 01 <span class="status"><i class="chama chama--pulsa" aria-hidden="true"></i>Etapa atual</span></p>
+          <p class="etapa-t">Diagnóstico</p>
+          <p class="etapa-d">Raio-X completo dos canais digitais, das vendas e dos processos do restaurante.</p>
+        </li>
+        <li class="etapa">
+          <span class="contagem" aria-hidden="true"><span>02</span></span>
+          <p class="etapa-rot">Etapa 02</p>
+          <p class="etapa-t">Estratégia</p>
+          <p class="etapa-d">Plano personalizado com metas claras, cronograma e canais prioritários.</p>
+        </li>
+        <li class="etapa">
+          <span class="contagem" aria-hidden="true"><span>03</span></span>
+          <p class="etapa-rot">Etapa 03</p>
+          <p class="etapa-t">Execução</p>
+          <p class="etapa-d">Conteúdo, tráfego pago, cardápio próprio e rastreamento em funcionamento.</p>
+        </li>
+        <li class="etapa">
+          <span class="contagem" aria-hidden="true"><span>04</span></span>
+          <p class="etapa-rot">Etapa 04</p>
+          <p class="etapa-t">Otimização</p>
+          <p class="etapa-d">Análise de dados, relatório mensal e melhoria contínua dos resultados.</p>
+        </li>
+      </ol>
+      <p class="regua processo-pe">Delivery Blindado é o método de trabalho da Projeta Food. Etapa atual marcada pelo Anel de Ignição e pela Chama de Status.</p>
+    </div>
+    <div class="s-rodape"><img class="marca" src="assets/brand/projeta-reduzida-negativa.svg" alt="Projeta Food" width="110" height="26"><span class="s-rodape-nota"></span><p class="s-num"><b>06</b> / 15</p></div>
+    <aside class="notas">
+      <p>O método em quatro etapas, com a Contagem de cada etapa saindo 40% acima do cartão (o numeral gigante dos cartões do site). A etapa em que o cliente está leva o Anel de Ignição e a Chama de Status com rótulo: mova as duas classes (anel anel--gira e o status) para a etapa certa.</p>
+      <p>Um Anel ativo por vez; em tela ele dá uma volta a cada 5,2 segundos e para no PDF e com movimento reduzido. Escreva "Delivery Blindado" sem símbolo de marca registrada até o registro ser confirmado.</p>
+    </aside>
+  </section>
+
+  <!-- ===================== 7 · TRÊS COLUNAS (serviços) ===================== -->
+  <section class="slide colunas campo-noite" id="slide-7" data-tom="noite" aria-roledescription="slide" aria-label="7 de 15: Seis frentes, um método só">
+    <div class="s-folio"><span>Projeta Food · Apresentação</span><span><b>02</b> · O método Delivery Blindado</span><div class="fio-fenda" aria-hidden="true"></div></div>
+    <div class="s-cab">
+      <p class="pavio">O que a Projeta faz</p>
+      <h2 class="s-titulo">Seis frentes, <em>um método só.</em></h2>
+    </div>
+    <ul class="colunas-grade">
+      <li class="cartao"><span class="cartao__icone"><svg class="ic" aria-hidden="true"><use href="#i-megafone"/></svg></span><p class="cartao__titulo">Tráfego pago</p><p class="cartao__texto">Anúncios no Meta e no Google com rastreio do clique até o pedido.</p></li>
+      <li class="cartao"><span class="cartao__icone"><svg class="ic" aria-hidden="true"><use href="#i-claquete"/></svg></span><p class="cartao__titulo">Conteúdo e criadores</p><p class="cartao__texto">Estratégia de conteúdo e vídeos gravados por clientes e criadores.</p></li>
+      <li class="cartao"><span class="cartao__icone"><svg class="ic" aria-hidden="true"><use href="#i-pino"/></svg></span><p class="cartao__titulo">Perfil no Google</p><p class="cartao__texto">Google Meu Negócio organizado para ser encontrado no bairro.</p></li>
+      <li class="cartao"><span class="cartao__icone"><svg class="ic" aria-hidden="true"><use href="#i-livro"/></svg></span><p class="cartao__titulo">Cardápio próprio</p><p class="cartao__texto">Cardápio digital próprio otimizado para vender sem comissão.</p></li>
+      <li class="cartao"><span class="cartao__icone"><svg class="ic" aria-hidden="true"><use href="#i-grafico"/></svg></span><p class="cartao__titulo">Relatórios e dados</p><p class="cartao__texto">Cada número com data, base e fonte, num relatório por mês.</p></li>
+      <li class="cartao"><span class="cartao__icone"><svg class="ic" aria-hidden="true"><use href="#i-alvo"/></svg></span><p class="cartao__titulo">Acompanhamento</p><p class="cartao__texto">Reunião estratégica mensal para revisar o plano e decidir o próximo passo.</p></li>
+    </ul>
+    <div class="s-rodape"><img class="marca" src="assets/brand/projeta-reduzida-negativa.svg" alt="Projeta Food" width="110" height="26"><span class="s-rodape-nota"></span><p class="s-num"><b>07</b> / 15</p></div>
+    <aside class="notas">
+      <p>Três colunas em duas linhas: um ícone Lucide por cartão (traço 2, pontas arredondadas), em Chama sobre caixa Superfície Alta. O vermelho do slide fica na palavra decisiva do título; ícones grandes em Ignição só a partir de 24 px e com moderação.</p>
+      <p>Para três itens, apague a segunda linha. Mantenha a linguagem do dono: pedido, margem, taxa, canal próprio. Nada de sigla sem tradução (escreva "custo por pedido", não a sigla em inglês).</p>
+    </aside>
+  </section>
+
+  <!-- ===================== 8 · NÚMERO GRANDE ===================== -->
+  <section class="slide numero campo-noite" id="slide-8" data-tom="noite" aria-roledescription="slide" aria-label="8 de 15: 34% dos pedidos no canal próprio, exemplo de preenchimento">
+    <div class="s-folio"><span>Projeta Food · Apresentação</span><span><b>03</b> · Prova</span><div class="fio-fenda" aria-hidden="true"></div></div>
+    <div class="numero-grade">
+      <div class="contador numero-principal" data-origem="medido">
+        <p class="pavio">O número do mês · exemplo de preenchimento</p>
+        <span class="contador__valor">34<em>%</em></span>
+        <span class="contador__rotulo">dos pedidos no canal próprio</span>
+        <span class="regua"><b>Régua:</b> base 1 restaurante [exemplo] · set/2026 · fonte: fechamento do caixa. Resultado de um restaurante, em um período: não é promessa nem média.</span>
+        <span class="contador__origem">Medido</span>
+      </div>
+      <div class="numero-lado">
+        <p class="numero-conclusao">Um em cada três pedidos já não paga comissão.</p>
+        <div class="contador contador--vazio" data-origem="estimado">
+          <span class="contador__valor" aria-label="sem dado">sem dado</span>
+          <span class="contador__rotulo">operações ativas</span>
+          <span class="regua">Dado em validação: número de porte aguardando a régua aprovada (data de corte e critério).</span>
+        </div>
+      </div>
+    </div>
+    <div class="s-rodape"><img class="marca" src="assets/brand/projeta-reduzida-negativa.svg" alt="Projeta Food" width="110" height="26"><span class="s-rodape-nota"></span><p class="s-num"><b>08</b> / 15</p></div>
+    <aside class="notas">
+      <p>Número grande: o Contador com régua é o personagem. Numeral Saira 500, sinal em Ignição a 60% do corpo, rótulo em caixa alta e a linha de régua obrigatória (período, base e fonte), com a marca de origem à esquerda (medido, calculado, referência ou estimado).</p>
+      <p>Ao lado, a conclusão em uma frase. Sem prova, entra o Contador vazio, como no exemplo de "operações ativas": traço longo e "dado em validação". Sem dado nunca vira zero.</p>
+      <p>O 34% deste slide é exemplo de preenchimento, não é resultado real. Número público da Projeta só com base, período e fonte aprovados.</p>
+    </aside>
+  </section>
+
+  <!-- ===================== 9 · DADOS COM PVIZ ===================== -->
+  <section class="slide dados campo-branco" id="slide-9" data-tom="branco" aria-roledescription="slide" aria-label="9 de 15: Depois do cardápio próprio, a curva mudou de inclinação">
+    <div class="s-folio"><span>Projeta Food · Apresentação</span><span><b>03</b> · Prova</span><div class="fio-fenda" aria-hidden="true"></div></div>
+    <div class="dados-grade">
+      <div class="dados-lado">
+        <p class="pavio">Pedidos por mês · exemplo</p>
+        <h2 class="s-titulo">A curva mudou de <em>inclinação.</em></h2>
+        <p class="s-apoio">O título afirma a conclusão. A Chama marca o mês em que a mudança entrou; a linha tracejada é a meta.</p>
+      </div>
+      <div class="dados-grafico" data-pviz='{"tipo":"linha","area":true,"rotulos":["mar","abr","mai","jun","jul","ago","set"],"valores":[120,128,131,150,182,214,240],"ignicao":{"indice":3,"rotulo":"Cardápio próprio no ar"},"meta":250,"unidade":"PEDIDOS","altura":420,"periodo":"mar a set/2026","base":"1 restaurante [exemplo]","fonte":"relatórios mensais","origem":"calculado","aviso":"Exemplo de preenchimento: troque pelos dados do cliente.","aria":"Pedidos por mês, de março a setembro de 2026, com o cardápio próprio entrando em junho"}'></div>
+    </div>
+    <div class="s-rodape"><img class="marca" src="assets/brand/projeta-reduzida-positiva.svg" alt="Projeta Food" width="110" height="26"><span class="s-rodape-nota"></span><p class="s-num"><b>09</b> / 15</p></div>
+    <aside class="notas">
+      <p>Dados com o motor pviz.js, em campo Branco (o campo de leitura longa e de fidelidade da cor). Os dados ficam no atributo data-pviz; o motor desenha a régua, a marca de origem e a Chama no ponto de ignição sozinho.</p>
+      <p>Um destaque por gráfico, base zero, sem grade, sem 3D e sem pizza. Em apresentação co-assinada, ponha style="--cliente-cor:#HEX" no contêiner do gráfico: a série principal vira a cor do restaurante (e o motor entra no modo neutro se a cor dele for vermelha, laranja, rosa ou vinho).</p>
+      <p>Os valores deste slide são exemplo. Troque tipo, rótulos e valores pelos do cliente; se não houver fonte, o rodapé do gráfico avisa "Dado ilustrativo · sem fonte".</p>
+    </aside>
+  </section>
+
+  <!-- ===================== 10 · FAIXA DE TELEMETRIA ===================== -->
+  <section class="slide telemetria-slide campo-noite" id="slide-10" data-tom="noite" aria-roledescription="slide" aria-label="10 de 15: A Projeta Food em números">
+    <div class="s-folio"><span>Projeta Food · Apresentação</span><span><b>03</b> · Prova</span><div class="fio-fenda" aria-hidden="true"></div></div>
+    <div class="s-cab">
+      <p class="pavio">Porte</p>
+      <h2 class="s-titulo">A Projeta Food <em>em números.</em></h2>
+      <p class="s-apoio">Os números de porte entram assim que a régua for aprovada: data de corte, critério de contagem e fonte.</p>
+    </div>
+    <div class="telemetria" role="list">
+      <div class="telemetria__item" role="listitem"><span class="telemetria__valor" aria-hidden="true"></span><span class="telemetria__reserva">[valor aprovado]</span><span class="telemetria__rotulo">operações ativas</span></div>
+      <div class="telemetria__item" role="listitem"><span class="telemetria__valor" aria-hidden="true"></span><span class="telemetria__reserva">[valor aprovado]</span><span class="telemetria__rotulo">estados atendidos</span></div>
+      <div class="telemetria__item" role="listitem"><span class="telemetria__valor" aria-hidden="true"></span><span class="telemetria__reserva">[valor aprovado]</span><span class="telemetria__rotulo">cidades com presença</span></div>
+      <div class="telemetria__item" role="listitem"><span class="telemetria__valor" aria-hidden="true"></span><span class="telemetria__reserva">[valor aprovado]</span><span class="telemetria__rotulo">[indicador aprovado]</span></div>
+      <p class="telemetria__regua">Data de corte: [dd/mm/aaaa] · critério: [como cada item é contado] · fonte: [cadastro de clientes da Projeta Food]</p>
+    </div>
+    <div class="selos">
+      <span class="selos-rot">Parcerias</span>
+      <span class="pilula pilula--reserva">[selo oficial vigente]</span>
+      <span class="pilula pilula--reserva">[selo oficial vigente]</span>
+      <span class="pilula pilula--reserva">[selo oficial vigente]</span>
+    </div>
+    <div class="s-rodape"><img class="marca" src="assets/brand/projeta-reduzida-negativa.svg" alt="Projeta Food" width="110" height="26"><span class="s-rodape-nota"></span><p class="s-num"><b>10</b> / 15</p></div>
+    <aside class="notas">
+      <p>Faixa de Telemetria: a faixa vermelha de números do site, promovida a componente de prova. É a segunda exceção nomeada da Lei 2 (uma por slide, e não no slide seguinte ao campo Ignição). Fios de 2 px em Divisa, numeral Saira 600 branco, rótulo curto e a régua obrigatória na linha de baixo.</p>
+      <p>Enquanto a Projeta Food não aprovar os números de porte (data de corte e critério únicos), cada coluna mostra o traço do Contador vazio e "[valor aprovado]". Os selos de parceria entram como espaço reservado até a confirmação do status vigente e dos arquivos oficiais; nunca maiores que a marca nem colados nela.</p>
+    </aside>
+  </section>
+
+  <!-- ===================== 11 · CASE COM FONTE ===================== -->
+  <section class="slide case campo-noite" id="slide-11" data-tom="noite" aria-roledescription="slide" aria-label="11 de 15: Case Forno Vivo, marca fictícia">
+    <div class="s-folio"><span>Projeta Food · Apresentação</span><span><b>03</b> · Case</span><div class="fio-fenda" aria-hidden="true"></div></div>
+    <div class="case-grade">
+      <figure class="moldura-o case-moldura" data-cliente="forno-vivo">
+        <div class="moldura-o__miolo">
+          <span class="placa-cliente case-placa"><span class="marca-ficticia">Forno <b>Vivo</b></span></span>
+          <div class="foto-mestra"><b>[Foto-mestra do prato do cliente]</b><span>Prato real, como chega ao cliente: 45 graus, luz lateral suave, recorte 4:3, comida como maior elemento.</span></div>
+        </div>
+      </figure>
+      <div class="case-texto">
+        <p class="pavio">Case · pizzaria</p>
+        <h2 class="s-sub">O canal próprio <em>ganhou peso.</em></h2>
+        <div data-escala="1.25" data-pviz='{"tipo":"comparativo","antes":{"rotulo":"Antes · jun/2026","valor":21,"vrotulo":"21%","sub":"pedidos no canal próprio"},"depois":{"rotulo":"Depois · set/2026","valor":34,"vrotulo":"34%","sub":"pedidos no canal próprio"},"periodo":"jun a set/2026","base":"1 restaurante","fonte":"fechamento do caixa","origem":"medido","aria":"Pedidos no canal próprio: 21% em junho e 34% em setembro de 2026, em um restaurante"}'></div>
+        <div class="case-autoriza">
+          <span class="pilula pilula--atencao">Autorização: [quem, quando, canal]</span>
+        </div>
+        <span class="rodape-ficticias">Forno Vivo é uma marca fictícia criada para este manual; os números são exemplo de preenchimento.</span>
+      </div>
+    </div>
+    <div class="s-rodape"><img class="marca" src="assets/brand/projeta-reduzida-negativa.svg" alt="Projeta Food" width="110" height="26"><span class="s-rodape-nota"></span><p class="s-num"><b>11</b> / 15</p></div>
+    <aside class="notas">
+      <p>Case (camada 3: a Projeta mostrando o cliente). A plataforma ocupa o slide e o restaurante entra intacto dentro da Moldura O: logo sem recolorir, foto real do prato, nada de brasa ou efeito sobre a comida. Uma Moldura O por slide.</p>
+      <p>Só publique com autorização escrita do restaurante (quem autorizou, quando, por qual canal) e com a régua completa. O comparativo do pviz já traz o aviso "resultado de um restaurante, em um período, não é promessa nem média"; não apague.</p>
+      <p>Forno Vivo é marca fictícia. Troque pelo cliente autorizado e retire a linha de marca fictícia.</p>
+    </aside>
+  </section>
+
+  <!-- ===================== 12 · EQUIPE ===================== -->
+  <section class="slide equipe campo-branco" id="slide-12" data-tom="branco" aria-roledescription="slide" aria-label="12 de 15: Quem cuida da sua operação">
+    <div class="s-folio"><span>Projeta Food · Apresentação</span><span><b>03</b> · Equipe</span><div class="fio-fenda" aria-hidden="true"></div></div>
+    <div class="s-cab">
+      <p class="pavio">Equipe</p>
+      <h2 class="s-titulo">Quem cuida da <em>sua operação.</em></h2>
+    </div>
+    <ul class="equipe-grade">
+      <li class="pessoa">
+        <div class="foto-mestra"><svg class="ic pessoa-ic" aria-hidden="true"><use href="#i-pessoa"/></svg><b>[Foto oficial]</b><span>Com termo de imagem assinado</span></div>
+        <div><p class="pessoa-nome">Clívio Ferreira</p><p class="pessoa-cargo">CEO</p><p class="pessoa-papel">[Papel na conta do cliente, em uma linha]</p></div>
+      </li>
+      <li class="pessoa">
+        <div class="foto-mestra"><svg class="ic pessoa-ic" aria-hidden="true"><use href="#i-pessoa"/></svg><b>[Foto oficial]</b><span>Com termo de imagem assinado</span></div>
+        <div><p class="pessoa-nome">Enio Alves</p><p class="pessoa-cargo">Sócio e diretor comercial</p><p class="pessoa-papel">[Papel na conta do cliente, em uma linha]</p></div>
+      </li>
+      <li class="pessoa">
+        <div class="foto-mestra"><svg class="ic pessoa-ic" aria-hidden="true"><use href="#i-pessoa"/></svg><b>[Foto oficial]</b><span>Com termo de imagem assinado</span></div>
+        <div><p class="pessoa-nome">Bruno Lima</p><p class="pessoa-cargo">Sócio</p><p class="pessoa-papel">[Papel na conta do cliente, em uma linha]</p></div>
+      </li>
+    </ul>
+    <div class="s-rodape"><img class="marca" src="assets/brand/projeta-reduzida-positiva.svg" alt="Projeta Food" width="110" height="26"><span class="s-rodape-nota">Cargos conforme o site; confirmação pendente.</span><p class="s-num"><b>12</b> / 15</p></div>
+    <aside class="notas">
+      <p>Equipe em campo Branco: três cartões Bancada com foto, nome em Saira larga, cargo em Rubro e o papel da pessoa na conta do cliente. Os três sócios publicados no site já estão preenchidos; os cargos aguardam confirmação.</p>
+      <p>Foto só a oficial, com termo de imagem assinado. Para quem atende a conta (gestor de tráfego, social media), duplique o cartão; nome de outra pessoa da equipe só com autorização dela.</p>
+    </aside>
+  </section>
+
+  <!-- ===================== 13 · CRONOGRAMA ===================== -->
+  <section class="slide cronograma campo-grafite" id="slide-13" data-tom="noite" aria-roledescription="slide" aria-label="13 de 15: Os primeiros 90 dias">
+    <div class="s-folio"><span>Projeta Food · Apresentação</span><span><b>03</b> · Próximos passos</span><div class="fio-fenda" aria-hidden="true"></div></div>
+    <div class="s-cab">
+      <p class="pavio">Cronograma</p>
+      <h2 class="s-titulo">Os primeiros <em>90 dias.</em></h2>
+      <p class="s-apoio">Cada marco tem responsável e data. O que depende do restaurante (acessos, fotos e aprovações) já entra no plano.</p>
+    </div>
+    <div class="cronograma-grafico" data-pviz='{"tipo":"linha-tempo","eventos":[{"data":"Semana 1","rotulo":"Diagnóstico entregue","sub":"Mapa de canais e de taxas"},{"data":"Semana 2","rotulo":"Plano aprovado","sub":"Metas por canal"},{"data":"Semana 3","rotulo":"Cardápio próprio no ar","sub":"Rastreamento ligado"},{"data":"Semana 6","rotulo":"Campanhas de recompra","sub":"Conteúdo e anúncios"},{"data":"Semana 12","rotulo":"Revisão do plano","sub":"Metas do próximo ciclo"}],"destaque":2,"periodo":"plano de 90 dias","fonte":"cronograma proposto ao cliente","origem":"estimado","aria":"Cronograma dos primeiros 90 dias em cinco marcos"}'></div>
+    <div class="s-rodape"><img class="marca" src="assets/brand/projeta-reduzida-negativa.svg" alt="Projeta Food" width="110" height="26"><span class="s-rodape-nota">Prazos estimados; a data de cada marco depende da entrega dos acessos pelo cliente.</span><p class="s-num"><b>13</b> / 15</p></div>
+    <aside class="notas">
+      <p>Cronograma com o tipo linha-tempo do pviz: cinco marcos no máximo, o marco em destaque é o próximo a acontecer. A marca de origem fica em "estimado" (pontilhado amarelo) porque é plano, não fato.</p>
+      <p>No celular o motor vira a linha do tempo na vertical sozinho. Troque as semanas pelas datas combinadas com o cliente.</p>
+    </aside>
+  </section>
+
+  <!-- ===================== 14 · PROPOSTA E INVESTIMENTO ===================== -->
+  <section class="slide proposta campo-noite" id="slide-14" data-tom="noite" aria-roledescription="slide" aria-label="14 de 15: Escolha o ponto de partida">
+    <div class="s-folio"><span>Projeta Food · Apresentação</span><span><b>03</b> · Proposta</span><div class="fio-fenda" aria-hidden="true"></div></div>
+    <div class="s-cab">
+      <p class="pavio">Investimento</p>
+      <h2 class="s-titulo">Escolha o <em>ponto de partida.</em></h2>
+    </div>
+    <ul class="planos">
+      <li class="plano">
+        <p class="plano-rot">Opção 1</p>
+        <p class="plano-nome">[Base]</p>
+        <p class="plano-preco"><b>R$ [valor]</b><span>por mês · [prazo mínimo]</span></p>
+        <ul class="lista-seta"><li>Diagnóstico e plano de 90 dias</li><li>Perfil no Google e cardápio próprio</li><li>Relatório mensal</li></ul>
+      </li>
+      <li class="plano anel">
+        <p class="plano-rot">Opção 2 <span class="plano-escolhido"><span class="seta-a" aria-hidden="true"></span>Recomendada</span></p>
+        <p class="plano-nome">[Plataforma]</p>
+        <p class="plano-preco"><b>R$ [valor]</b><span>por mês · [prazo mínimo]</span></p>
+        <ul class="lista-seta"><li>Tudo da opção 1</li><li>Tráfego pago no Meta e no Google</li><li>Conteúdo e criadores</li><li>Reunião estratégica mensal</li></ul>
+      </li>
+      <li class="plano">
+        <p class="plano-rot">Opção 3</p>
+        <p class="plano-nome">[Rede]</p>
+        <p class="plano-preco"><b>R$ [valor]</b><span>por mês · [prazo mínimo]</span></p>
+        <ul class="lista-seta"><li>Tudo da opção 2</li><li>Mais de uma unidade no mesmo painel</li><li>Campanhas por unidade</li></ul>
+      </li>
+    </ul>
+    <p class="regua planos-pe">Valores, escopo, prazos e condições conforme a proposta assinada. Investimento em mídia pago à parte, direto às plataformas. Resultados variam por operação.</p>
+    <div class="s-rodape"><img class="marca" src="assets/brand/projeta-reduzida-negativa.svg" alt="Projeta Food" width="110" height="26"><span class="s-rodape-nota"></span><p class="s-num"><b>14</b> / 15</p></div>
+    <aside class="notas">
+      <p>Proposta com três opções crescentes; a recomendada leva o Anel de Ignição (estático, sem giro: o giro fica para a etapa ativa do método) e a etiqueta "Recomendada" com a Seta A. Nomes e itens entre colchetes são modelo: troque pelo escopo real.</p>
+      <p>Preço só o da proposta, escrito como "R$ 0.000,00 por mês", com prazo mínimo e o que está fora (a verba de mídia). Nunca "resultado garantido"; a promessa é de método, não de faturamento.</p>
+    </aside>
+  </section>
+
+  <!-- ===================== 15 · FECHAMENTO E CHAMADA ===================== -->
+  <section class="slide fechamento campo-noite brasa--contra" id="slide-15" data-tom="noite" aria-roledescription="slide" aria-label="15 de 15: A gente monta a plataforma. O seu restaurante decola.">
+    <div class="grade-lanc" aria-hidden="true"></div>
+    <div class="fechamento-texto">
+      <p class="pavio">Próximo passo</p>
+      <h2 class="s-display">A gente monta a plataforma. <em>O seu restaurante decola.</em></h2>
+      <div class="botoes fechamento-acao">
+        <a class="botao" href="mailto:contato@projetafood.com.br">Agendar diagnóstico gratuito de 40 minutos <i class="seta-a seta-a--dir" aria-hidden="true"></i></a>
+      </div>
+    </div>
+    <dl class="canais">
+      <div class="canal"><svg class="ic" aria-hidden="true"><use href="#i-mensagem"/></svg><div><dt>WhatsApp</dt><dd>[telefone oficial]</dd></div></div>
+      <div class="canal"><svg class="ic" aria-hidden="true"><use href="#i-email"/></svg><div><dt>E-mail</dt><dd>contato@projetafood.com.br</dd></div></div>
+      <div class="canal"><svg class="ic" aria-hidden="true"><use href="#i-arroba"/></svg><div><dt>Instagram</dt><dd>@projetafood</dd></div></div>
+      <div class="canal"><svg class="ic" aria-hidden="true"><use href="#i-globo"/></svg><div><dt>Site</dt><dd>projetafood.com.br</dd></div></div>
+    </dl>
+    <div class="fechamento-base">
+      <img class="marca" src="assets/brand/projeta-completa-negativa.svg" alt="Projeta Food" width="300" height="89">
+      <span class="id-projeta">Projeta Food · [razão social] · CNPJ [nº] · Pouso Alegre (MG) · contato@projetafood.com.br</span>
+    </div>
+    <p class="s-num so-leitor"><b>15</b> / 15</p>
+    <aside class="notas">
+      <p>Fechamento: o manifesto no título, com a frase final em Ignição, e uma chamada só, no botão em pílula. Chamadas da casa: "Agendar diagnóstico gratuito de 40 minutos", "Quero um diagnóstico", "Falar com a Projeta pelo WhatsApp".</p>
+      <p>A linha de identificação é obrigatória quando o PDF sai da reunião: razão social e CNPJ ficam entre colchetes até a confirmação, assim como o telefone oficial. Nunca apague este slide.</p>
+      <p>Brasa no canto superior direito com contra-halo em Vinho Noite no canto oposto; a Grade de Lançamento aparece só como textura discreta, nunca atrás do texto corrido.</p>
+    </aside>
+  </section>
+
+  <div class="progresso" aria-hidden="true"><span></span></div>
+  <p class="deck-contador" aria-live="polite"><b id="c-atual">01</b><span aria-hidden="true">/</span><span id="c-total">15</span></p>
+</main>
+</div>
+
+<aside class="painel-notas" id="painel-notas" aria-label="Notas do apresentador">
+  <div class="painel-cab">
+    <span class="rotulo-painel">Notas do apresentador</span>
+    <span class="painel-num" id="p-num">01<span> / 15</span></span>
+  </div>
+  <p class="painel-tit" id="p-tit"></p>
+  <div class="painel-txt" id="p-txt"></div>
+  <p class="painel-prox" id="p-prox"></p>
+  <p class="painel-teclas"><kbd>P</kbd> fecha as notas · <kbd>F</kbd> tela cheia · <kbd>C</kbd> co-assinado · setas mudam o slide</p>
+</aside>
+
+<script src="pviz.js"></script>
+<script src="pforms.js"></script>
+<script>
+/* =====================================================================
+   NAVEGAÇÃO DO DECK · Plataforma Ignição v1
+   ===================================================================== */
+(function(){
+  try {
+  var raiz = document.documentElement;
+  var deck = document.getElementById('deck');
+  var slides = Array.prototype.slice.call(deck.querySelectorAll('.slide'));
+  var total = slides.length, atual = 0;
+  var barra = deck.querySelector('.progresso span');
+  var cAtual = document.getElementById('c-atual');
+  var pNum = document.getElementById('p-num'), pTit = document.getElementById('p-tit');
+  var pTxt = document.getElementById('p-txt'), pProx = document.getElementById('p-prox');
+  var dois = function(n){ return (n < 10 ? '0' : '') + n; };
+  document.getElementById('c-total').textContent = dois(total);
+  var celular = function(){ return window.matchMedia('(max-width:640px), (max-height:500px)').matches; };
+  var tituloDe = function(s){ return (s.getAttribute('aria-label') || '').replace(/^\d+ de \d+:\s*/, ''); };
+
+  /* modo co-assinado pelo endereço: ?coassinado */
+  if (/[?&]coassinado\b/.test(location.search)) raiz.classList.add('coassinado');
+
+  /* escala do palco: k = min(largura / 1440, altura / 900) */
+  function escalar(){
+    var palco = document.getElementById('palco');
+    var w = palco.clientWidth, h = palco.clientHeight;
+    if (!w || !h) return;
+    deck.style.setProperty('--k', Math.min(w / 1440, h / 900).toFixed(4));
+  }
+
+  function mostrar(n, semHash){
+    atual = Math.max(0, Math.min(total - 1, n));
+    slides.forEach(function(s, i){
+      var ativo = i === atual;
+      s.classList.toggle('ativo', ativo);
+      if (!celular() && !ativo) s.setAttribute('aria-hidden', 'true'); else s.removeAttribute('aria-hidden');
+    });
+    var s = slides[atual];
+    deck.setAttribute('data-tom', s.getAttribute('data-tom') || 'noite');
+    if (barra) barra.style.setProperty('--p', ((atual + 1) / total).toFixed(4));
+    cAtual.textContent = dois(atual + 1);
+    pNum.innerHTML = dois(atual + 1) + '<span> / ' + dois(total) + '</span>';
+    pTit.textContent = tituloDe(s);
+    var nota = s.querySelector('aside.notas');
+    pTxt.innerHTML = nota ? nota.innerHTML : '<p>Sem notas para este slide.</p>';
+    pProx.innerHTML = atual < total - 1 ? '<b>Próximo:</b> ' + tituloDe(slides[atual + 1]) : '<b>Fim da apresentação.</b>';
+    if (!semHash) { try { history.replaceState(null, '', location.pathname + location.search + '#' + (atual + 1)); } catch (e) {} }
+  }
+  var lerHash = function(){ var h = (location.hash || '').replace('#', ''); return /^\d+$/.test(h) ? parseInt(h, 10) - 1 : null; };
+
+  document.addEventListener('keydown', function(e){
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    var alvo = e.target && e.target.tagName;
+    if (alvo === 'INPUT' || alvo === 'TEXTAREA' || alvo === 'SELECT') return;
+    var k = e.key;
+    if (k === 'p' || k === 'P') { raiz.classList.toggle('com-notas'); escalar(); return; }
+    if (k === 'c' || k === 'C') { raiz.classList.toggle('coassinado'); refazFormas(); return; }
+    if (k === 'f' || k === 'F') {
+      try {
+        if (document.fullscreenElement) document.exitFullscreen();
+        else if (raiz.requestFullscreen) { var r = raiz.requestFullscreen(); if (r && r.catch) r.catch(function(){}); }
+      } catch (err) {}
+      return;
+    }
+    if (celular()) return;
+    if (k === 'ArrowRight' || k === 'ArrowDown' || k === 'PageDown' || (k === ' ' && !e.shiftKey)) { e.preventDefault(); mostrar(atual + 1); }
+    else if (k === 'ArrowLeft' || k === 'ArrowUp' || k === 'PageUp' || (k === ' ' && e.shiftKey)) { e.preventDefault(); mostrar(atual - 1); }
+    else if (k === 'Home') { e.preventDefault(); mostrar(0); }
+    else if (k === 'End') { e.preventDefault(); mostrar(total - 1); }
+  });
+
+  document.getElementById('palco').addEventListener('click', function(e){
+    if (celular() || e.target.closest('a,button')) return;
+    mostrar(atual + (e.clientX < window.innerWidth / 3 ? -1 : 1));
+  });
+
+  var x0 = null, y0 = null;
+  document.addEventListener('touchstart', function(e){ if (e.touches.length === 1) { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; } }, { passive:true });
+  document.addEventListener('touchend', function(e){
+    if (x0 === null || celular()) { x0 = null; return; }
+    var dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) mostrar(atual + (dx < 0 ? 1 : -1));
+    x0 = null;
+  }, { passive:true });
+
+  window.addEventListener('hashchange', function(){ var n = lerHash(); if (n !== null) mostrar(n, n >= 0 && n < total); });
+
+  /* =====================================================================
+     GRÁFICOS E FORMAS (pviz.js e pforms.js)
+     No palco o desenho é feito mais estreito e ampliado 1,5 vez, para os rótulos
+     lerem a distância (o rótulo de 14 unidades sai com 21 px no slide de 1440).
+     data-escala no contêiner troca o fator de um gráfico só.
+     No celular os motores usam a largura real (1 unidade = 1 px).
+     ===================================================================== */
+  var AMPLIA = 1.5;
+  var graficos = Array.prototype.slice.call(deck.querySelectorAll('[data-pviz]'));
+  graficos.forEach(function(el){ try { el.__base = JSON.parse(el.getAttribute('data-pviz')); } catch (err) { el.__base = null; console.error('deck: data-pviz não é JSON válido', el); } });
+  function cfgPara(el){
+    var c = Object.assign({}, el.__base);
+    var k = parseFloat(el.getAttribute('data-escala')) || AMPLIA;
+    if (!celular()) { var w = el.clientWidth; if (w) c.largura = Math.round(w / k); if (c.altura) c.altura = Math.round(c.altura / k); }
+    return c;
+  }
+  graficos.forEach(function(el){ if (el.__base) el.setAttribute('data-pviz', JSON.stringify(cfgPara(el))); });
+  function refazGraficos(){
+    if (!window.pviz) return;
+    graficos.forEach(function(el){ if (el.__base) window.pviz.render(el, el.__base.tipo, cfgPara(el)); });
+  }
+
+  var formas = Array.prototype.slice.call(deck.querySelectorAll('[data-pforms][data-amplia]'));
+  formas.forEach(function(el){ try { el.__base = JSON.parse(el.getAttribute('data-pforms')); } catch (err) { el.__base = null; } });
+  function formaPara(el){
+    var c = Object.assign({}, el.__base);
+    if (!celular()) { var w = el.clientWidth; if (w) c.largura = Math.round(w / AMPLIA); }
+    return c;
+  }
+  formas.forEach(function(el){ if (el.__base) el.setAttribute('data-pforms', JSON.stringify(formaPara(el))); });
+  function refazFormas(){
+    if (!window.pforms) return;
+    formas.forEach(function(el){ if (el.__base) window.pforms.render(el, el.__base.forma, formaPara(el)); });
+  }
+
+  var modo = celular() ? 'celular' : 'palco';
+  function ajustar(){
+    escalar();
+    var m = celular() ? 'celular' : 'palco';
+    if (m !== modo) { modo = m; refazGraficos(); refazFormas(); mostrar(atual, true); }
+  }
+  var inicial = lerHash();
+  mostrar(inicial === null ? 0 : inicial, inicial === null || (inicial >= 0 && inicial < total));
+  escalar();
+  if (inicial !== null && celular() && slides[atual]) { try { slides[atual].scrollIntoView(); } catch (err) {} }
+  var espera = 0;
+  window.addEventListener('resize', function(){ clearTimeout(espera); espera = setTimeout(ajustar, 80); });
+  if (typeof ResizeObserver !== 'undefined') new ResizeObserver(function(){ clearTimeout(espera); espera = setTimeout(ajustar, 80); }).observe(document.getElementById('palco'));
+  } catch (e) { console.error('deck', e); }
+})();
+</script>
+</body>
+</html>

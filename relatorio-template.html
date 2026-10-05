@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Relatório Mensal Projeta Food</title>
+<meta name="description" content="Modelo de relatório mensal de resultados da Projeta Food para o restaurante cliente (camada 2, co-assinado), no sistema Plataforma Ignição v1: capa com a marca do cliente, resumo em três frases, números com régua, gráficos na cor do cliente, o que fizemos, o que aprendemos, próximos passos e anexo de criativos. A4 para imprimir e leitura na tela. Dados de exemplo fictícios.">
+<meta name="theme-color" content="#050203">
+<meta name="color-scheme" content="dark">
+<link rel="icon" type="image/svg+xml" href="assets/brand/projeta-favicon.svg">
+<link rel="apple-touch-icon" href="assets/brand/projeta-favicon-180.png">
+<script>
+/* =====================================================================
+   BLOCO DE CONFIGURAÇÃO DO RELATÓRIO (troque aqui; o resto se ajusta)
+   Relatório mensal ao cliente · Projeta Food · Plataforma Ignição v1
+   Manual: brand-book.html, seção 18 (ordem das páginas, capa, modo neutro,
+   régua e checklist de envio).
+
+   O que este bloco troca sozinho: nome do restaurante em todas as páginas,
+   logo, cores e fontes da marca do cliente, cor dos dados nos gráficos,
+   período, data de envio, versão, quem atende e o modo neutro.
+   O que você troca na mão: os números de cada página e o atributo
+   data-pviz de cada gráfico (rótulos, valores, período, base, fonte e
+   origem). Todo número leva período, base de comparação, fonte e origem
+   (medido, calculado, referência ou estimado). Sem dado: escreva "sem dado"
+   e use o traço; nunca zero, nunca o número do mês anterior.
+   As mesmas cores também estão como variáveis CSS no topo da folha de estilo
+   (--cliente-cor, --cliente-cor-1 a 3, --cliente-fonte-*, --cliente-logo):
+   valem quando o JavaScript está desligado. Se mudar aqui, mude lá também.
+   ===================================================================== */
+window.RELATORIO = {
+  exemplo: true,             // true: mostra "Exemplo · dados fictícios" e o botão do modo neutro. No relatório real: false.
+  cliente: {
+    nome: "Kaze Sushi",      // marca fictícia do exemplo
+    logo: "",                // caminho do logo aprovado na ficha de marca (ex.: "logo-cliente.svg", ao lado deste arquivo). Vazio: logotipo tipográfico do exemplo.
+    placa: true,             // true: o logo entra numa placa clara (use quando ele não funciona sobre o Noite)
+    corDados: "#14213D",     // cor da marca que pinta a série principal dos gráficos
+    cor1: "#14213D",         // campo da marca (fundo)
+    cor2: "#F5F1E8",         // texto da marca
+    cor3: "#C9A227",         // destaque da marca
+    fonteTitulo: "\"Zen Kaku Gothic New\", Arial, sans-serif",
+    fonteTexto: "\"Noto Sans\", Arial, sans-serif",
+    neutro: "auto"           // "auto": modo neutro quando a cor dos dados é vermelha, laranja, rosa ou vinho. true força; false desliga.
+  },
+  periodo: {
+    mes: "setembro/2026", curto: "set/2026", datas: "01 a 30/09/2026",
+    comparacao: "agosto/2026", comparacaoCurta: "ago/2026", comparacaoDatas: "01 a 31/08/2026"
+  },
+  envio: { data: "[dd/mm/aaaa]", versao: "v1", atendimento: "[nome]" }
+};
+document.documentElement.classList.add('js');
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Saira:wdth,wght@100..125,400..800&family=Unbounded:wght@500..700&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<!-- Fontes das marcas fictícias do exemplo (Kaze Sushi e Nonna Rosa). No relatório real, troque pelas fontes da ficha de marca do cliente. -->
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700&family=Noto+Sans:wght@400;600&family=Playfair+Display:wght@700;800&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* =====================================================================
+   RELATÓRIO MENSAL AO CLIENTE · Projeta Food · Plataforma Ignição v1
+   Camada 2: a moldura é da Projeta, o título é do restaurante.
+   Uma única folha de estilo. A4 retrato, uma página por folha, e leitura
+   na tela (no celular as folhas viram blocos corridos).
+   ===================================================================== */
+
+/* ---------- 0. CONFIGURAÇÃO DA MARCA DO CLIENTE (variáveis CSS) ----------
+   Iguais ao bloco RELATORIO do topo do arquivo. --cliente-cor é a cor dos
+   dados (o motor pviz.js lê sozinho). --cliente-logo aceita url("arquivo.svg"). */
+:root{
+  --cliente-cor:#14213D;
+  --cliente-cor-1:#14213D;
+  --cliente-cor-2:#F5F1E8;
+  --cliente-cor-3:#C9A227;
+  --cliente-fonte-titulo:"Zen Kaku Gothic New",Arial,sans-serif;
+  --cliente-fonte-texto:"Noto Sans",Arial,sans-serif;
+  --cliente-logo:none;
+}
+
+/* ---------- 1. Tokens (mesmos valores do brand-book.html) ---------- */
+:root{
+  color-scheme:dark;
+  --noite:#050203; --preto:#000000; --superficie:#10090B; --superficie-alta:#1A0D10;
+  --grafite:#221E1E; --branco:#FFFFFF; --bancada:#F7F7F7;
+  --ignicao:#ED0012; --rosado:#FEDADE; --faisca-clara:#FA949D; --chama:#FF5A67;
+  --rubro:#AD000D; --brasa-funda:#7E000A; --vinho:#560007; --vinho-noite:#300008;
+  --fumaca-50:#F0EEEE; --fumaca-200:#BDB8B8; --fumaca-400:#8C8686; --fumaca-600:#5E5858; --fumaca-800:#3A3434;
+  --fio-escuro:#FFFFFF24; --fio-claro:#E2DEDE;
+  --positivo:#75DC91; --positivo-claro:#1E7B45; --atencao:#FFC145; --atencao-claro:#8A5A00;
+  --negativo:#FF8FB0; --negativo-claro:#A3175A; --informacao:#8FB8FF; --informacao-claro:#1F5FBF;
+
+  --font-titulo:"Transducer","Transducer Projeta","Saira",Arial,sans-serif;
+  --font-display:"Kallisto","Kallisto Projeta","Unbounded","Arial Black",sans-serif;
+  --font-texto:"Barlow",Arial,sans-serif;
+  --largo:112.5%;
+  --track-sobre:.34em;
+  --r-cartao:20px; --r-placa:12px; --r-pilula:999px;
+
+  /* Folha A4: 210 × 297 mm, margem de 15 mm nas laterais */
+  --folha-l:210mm; --folha-a:297mm;
+  --folha-pad:13mm 15mm 11mm;
+
+  /* Escala do relatório (tela e papel) */
+  --r-titulo:30px; --r-sub:17px; --r-corpo:13.5px; --r-apoio:12.5px; --r-regua:10.5px; --r-sobre:10px;
+
+  /* Ícones Lucide em máscara (traço 2): a cor vem de background-color */
+  --ic-check:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='m9 12 2 2 4-4'/%3E%3C/svg%3E");
+  --ic-x:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='m15 9-6 6'/%3E%3Cpath d='m9 9 6 6'/%3E%3C/svg%3E");
+  --ic-info:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='M12 16v-4'/%3E%3Cpath d='M12 8h.01'/%3E%3C/svg%3E");
+  --ic-alerta:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3'/%3E%3Cpath d='M12 9v4'/%3E%3Cpath d='M12 17h.01'/%3E%3C/svg%3E");
+  --ic-gauge:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m12 14 4-4'/%3E%3Cpath d='M3.34 19a10 10 0 1 1 17.32 0'/%3E%3C/svg%3E");
+  --ic-calc:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect width='16' height='20' x='4' y='2' rx='2'/%3E%3Cline x1='8' x2='16' y1='6' y2='6'/%3E%3Cline x1='16' x2='16' y1='14' y2='18'/%3E%3Cpath d='M16 10h.01'/%3E%3Cpath d='M12 10h.01'/%3E%3Cpath d='M8 10h.01'/%3E%3Cpath d='M12 14h.01'/%3E%3Cpath d='M8 14h.01'/%3E%3Cpath d='M12 18h.01'/%3E%3Cpath d='M8 18h.01'/%3E%3C/svg%3E");
+  --ic-livro:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 7v14'/%3E%3Cpath d='M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z'/%3E%3C/svg%3E");
+  --ic-frasco:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2v6a2 2 0 0 0 .245.96l5.51 10.08A2 2 0 0 1 18 22H6a2 2 0 0 1-1.755-2.96l5.51-10.08A2 2 0 0 0 10 8V2'/%3E%3Cpath d='M6.453 15h11.094'/%3E%3Cpath d='M8.5 2h7'/%3E%3C/svg%3E");
+  --seta-a:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 41.12 35.75'%3E%3Cpolygon points='0,35.75 16.99,0 24.13,0 41.12,35.75 34.02,35.75 20.56,7.43 7.1,35.75'/%3E%3C/svg%3E");
+  --chama-forma:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='87.4 14.6 6.8 12.1'%3E%3Cpath d='M91.05,26.43c-.98-1.28-2.53-3.64-3.14-6.01-1.87-7.23,7.34-7.57,5.91-.22-.47,2.41-1.87,4.88-2.77,6.23Z'/%3E%3C/svg%3E");
+  --mo-cunha:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 1' preserveAspectRatio='none'%3E%3Cpath d='M0 0H36.5L43.5 1H0ZM63.5 0H100V1H56.5Z'/%3E%3C/svg%3E");
+}
+@property --anel-a{ syntax:"<angle>"; inherits:false; initial-value:0deg; }
+
+/* ---------- 2. Campos: cada campo define as variáveis de leitura (--f-*) ---------- */
+.campo-noite,.campo-grafite,:root{
+  --f-fundo:var(--noite); --f-texto:var(--fumaca-50); --f-titulo:var(--branco); --f-apoio:var(--fumaca-200);
+  --f-legenda:var(--fumaca-400); --f-enfase:var(--chama); --f-ignicao:var(--ignicao); --f-num:var(--ignicao);
+  --f-fio:var(--fio-escuro); --f-fio-forte:#FFFFFF3D; --f-painel:var(--superficie);
+  --f-ok:var(--positivo); --f-atencao:var(--atencao); --f-neg:var(--negativo); --f-info:var(--informacao);
+  --f-pavio:var(--ignicao);
+}
+.campo-noite,.campo-grafite,.campo-branco,.campo-bancada{ background-color:var(--f-fundo); color:var(--f-texto); }
+.campo-grafite{ --f-fundo:var(--grafite); --f-painel:var(--noite); }
+.campo-branco,.campo-bancada{
+  --f-fundo:var(--branco); --f-texto:var(--fumaca-800); --f-titulo:var(--noite); --f-apoio:var(--fumaca-600);
+  --f-legenda:var(--fumaca-600); --f-enfase:var(--rubro); --f-ignicao:var(--ignicao); --f-num:var(--noite);
+  --f-fio:var(--fio-claro); --f-fio-forte:#CFC9C9; --f-painel:var(--bancada);
+  --f-ok:var(--positivo-claro); --f-atencao:var(--atencao-claro); --f-neg:var(--negativo-claro); --f-info:var(--informacao-claro);
+}
+.campo-bancada{ --f-fundo:var(--bancada); --f-painel:var(--branco); }
+
+/* Modo neutro: marca do cliente vermelha, laranja, rosa ou vinho. A Ignição sai do
+   documento; o vermelho da Projeta fica só no logo reduzido do rodapé. */
+.modo-neutro,.modo-neutro .campo-branco,.modo-neutro .campo-bancada{ --f-ignicao:var(--noite); --f-enfase:var(--noite); --f-pavio:var(--noite); }
+.modo-neutro .campo-grafite{ --f-ignicao:var(--branco); --f-enfase:var(--branco); --f-pavio:var(--branco); }
+/* A caixa de instruções é ferramenta da tela, não página do relatório: mantém as cores do escuro. */
+.modo-neutro .instrucoes{ --f-ignicao:var(--ignicao); --f-enfase:var(--chama); --f-pavio:var(--ignicao); }
+
+/* ---------- 3. Reset ---------- */
+*,*::before,*::after{ box-sizing:border-box; }
+html{ -webkit-text-size-adjust:100%; text-size-adjust:100%; }
+body{
+  margin:0; background:#050203; color:#FFFFFF;
+  font-family:var(--font-texto); font-size:var(--r-corpo); line-height:1.55; font-weight:400;
+  font-variant-numeric:lining-nums; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+}
+img,svg{ display:block; max-width:100%; }
+img{ height:auto; }
+h1,h2,h3,h4,p,ul,ol,dl,dd,figure{ margin:0; }
+ul,ol{ padding:0; list-style:none; }
+button{ font:inherit; color:inherit; cursor:pointer; background:none; border:0; padding:0; }
+table{ border-collapse:collapse; border-spacing:0; }
+p,li,td,th,dd,dt,figcaption,code,a,label{ overflow-wrap:anywhere; }
+[hidden]{ display:none!important; }
+:focus-visible{ outline:2px solid var(--chama); outline-offset:3px; border-radius:4px; }
+.so-leitor{ position:absolute!important; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0 0 0 0); clip-path:inset(50%); white-space:nowrap; border:0; }
+a{ color:var(--f-enfase); text-underline-offset:.2em; }
+b,strong{ font-weight:600; color:var(--f-titulo); }
+code{ font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:.88em; padding:.1em .38em; border-radius:6px; background:var(--f-painel); color:var(--f-titulo); }
+
+/* ---------- 4. Tipografia ---------- */
+h1,h2,h3,h4,.titulo{
+  font-family:var(--font-titulo); font-stretch:var(--largo); font-weight:700; text-transform:uppercase;
+  letter-spacing:-.055em; line-height:1; color:var(--f-titulo); overflow-wrap:normal; word-break:normal; text-wrap:balance;
+}
+:is(h1,h2,h3,h4,.titulo) em{ font-style:normal; color:var(--f-ignicao); }
+.campo-branco :is(h3,h4) em,.campo-bancada :is(h3,h4) em{ color:var(--f-enfase); }   /* abaixo de 24 px, no claro: Rubro */
+.acento{ line-height:.98; }
+.pavio{ display:inline-flex; align-items:center; gap:.75em; font:600 var(--r-sobre)/1.3 var(--font-texto); letter-spacing:var(--track-sobre); text-transform:uppercase; color:var(--f-titulo); }
+.pavio::before{ content:""; width:16px; height:2px; flex:none; background:var(--f-pavio); }
+.regua{ display:block; font:400 var(--r-regua)/1.45 var(--font-texto); color:var(--f-legenda); }
+.apoio{ font-size:var(--r-apoio); line-height:1.55; color:var(--f-apoio); }
+.n{ font-variant-numeric:lining-nums tabular-nums; }
+
+/* Formas da casa em linha */
+.seta-a{ display:inline-block; flex:none; width:1em; height:.869em; background:var(--f-ignicao); -webkit-mask:var(--seta-a) center/contain no-repeat; mask:var(--seta-a) center/contain no-repeat; }
+.chama{ display:inline-block; flex:none; width:.56em; height:1em; background:var(--f-ignicao); -webkit-mask:var(--chama-forma) center/contain no-repeat; mask:var(--chama-forma) center/contain no-repeat; vertical-align:-.12em; }
+.chama--pulsa{ animation:chama-pulso 1.6s ease-in-out infinite; }
+@keyframes chama-pulso{ 0%,100%{ opacity:1; } 50%{ opacity:.45; } }
+.ic{ display:inline-block; flex:none; width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; vertical-align:middle; }
+
+/* Fio com Fenda: a fenda de base do O virando divisor (um por folha) */
+.fio-fenda{ display:grid; grid-template-columns:minmax(0,1fr) 9% minmax(0,1fr); align-items:center; min-height:10px; color:var(--f-fio-forte); }
+.fio-fenda::before,.fio-fenda::after{ content:""; height:1px; background:currentColor; }
+.fio-fenda::before{ grid-column:1; grid-row:1; } .fio-fenda::after{ grid-column:3; grid-row:1; }
+
+/* Contagem: numeral Saira 600 esticado 1,5 vez, dois dígitos */
+.contagem{ --dig:2; display:inline-block; flex:none; width:calc(var(--dig) * .936em); height:.9em; font-family:var(--font-titulo); font-stretch:var(--largo); font-weight:600; font-variant-numeric:lining-nums tabular-nums; letter-spacing:-.06em; line-height:.9; color:var(--f-num); }
+.contagem > span{ display:block; transform:scaleX(1.5); transform-origin:0 50%; white-space:nowrap; }
+
+/* Moldura O: o O partido do logotipo (cunha em cima, fenda de 9% embaixo) */
+.moldura-o{
+  --mo-t:6px; --mo-r:calc(var(--mo-t) * 6.25); --mo-cor:var(--f-titulo);
+  position:relative; display:grid; place-items:center; min-width:0; padding:calc(var(--mo-t) * 7) calc(var(--mo-t) * 6);
+  border-radius:var(--mo-r); isolation:isolate;
+}
+.moldura-o::before{
+  content:""; position:absolute; inset:0; z-index:-1; pointer-events:none;
+  border:var(--mo-t) solid var(--mo-cor); border-radius:inherit;
+  -webkit-mask:var(--mo-cunha) top/100% var(--mo-t) no-repeat, linear-gradient(90deg,#000 45.5%,transparent 45.5% 54.5%,#000 54.5%) bottom/100% var(--mo-t) no-repeat, linear-gradient(#000,#000) 0 var(--mo-t)/100% calc(100% - 2 * var(--mo-t)) no-repeat;
+          mask:var(--mo-cunha) top/100% var(--mo-t) no-repeat, linear-gradient(90deg,#000 45.5%,transparent 45.5% 54.5%,#000 54.5%) bottom/100% var(--mo-t) no-repeat, linear-gradient(#000,#000) 0 var(--mo-t)/100% calc(100% - 2 * var(--mo-t)) no-repeat;
+}
+
+/* Anel de Ignição: contorno a 14% + arco de 25% em Ignição (um ativo por folha) */
+.anel{ position:relative; }
+.anel::after{
+  content:""; position:absolute; inset:-1px; border-radius:inherit; padding:2px; pointer-events:none;
+  background:conic-gradient(from calc(20deg + var(--anel-a)), var(--ignicao) 0 25%, var(--fio-claro) 25% 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor;
+          mask:linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+.modo-neutro .anel::after{ background:conic-gradient(from calc(20deg + var(--anel-a)), var(--noite) 0 25%, var(--fio-claro) 25% 100%); }
+.anel--gira::after{ animation:anel-giro 5.2s linear infinite; }
+@keyframes anel-giro{ to{ --anel-a:360deg; } }
+
+/* Brasa: halo do topo do site, controlado (só no campo Noite da capa) */
+.brasa{ background-image:radial-gradient(ellipse 95% 46% at 100% 0%, #ED00126E 0%, #AD000D33 45%, transparent 100%); background-repeat:no-repeat; }
+
+/* Marca de origem (Régua de prova): traço de 3 px no estilo do estado + palavra */
+.origem{ display:inline-flex; align-items:center; gap:5px; padding-left:7px; border-left:3px solid var(--o-cor,var(--f-titulo)); font:600 9.5px/1.3 var(--font-texto); letter-spacing:.1em; text-transform:uppercase; color:var(--o-cor,var(--f-titulo)); white-space:nowrap; }
+.origem[data-origem="medido"]{ --o-cor:var(--f-titulo); }
+.origem[data-origem="calculado"]{ --o-cor:var(--f-apoio); border-left-width:2px; }
+.origem[data-origem="referencia"]{ --o-cor:var(--f-info); border-left-style:dashed; }
+.origem[data-origem="estimado"]{ --o-cor:var(--f-atencao); border-left-style:dotted; }
+.origem[data-origem="sem-dado"]{ --o-cor:var(--f-legenda); border-left-style:dotted; }
+.origem::before{ content:""; width:12px; height:12px; flex:none; background:currentColor; -webkit-mask:var(--o-ic,var(--ic-gauge)) center/contain no-repeat; mask:var(--o-ic,var(--ic-gauge)) center/contain no-repeat; }
+.origem[data-origem="calculado"]{ --o-ic:var(--ic-calc); }
+.origem[data-origem="referencia"]{ --o-ic:var(--ic-livro); }
+.origem[data-origem="estimado"]{ --o-ic:var(--ic-frasco); }
+.origem[data-origem="sem-dado"]{ --o-ic:var(--ic-info); }
+
+/* Estado (sempre com ícone e palavra) */
+.situacao{ display:inline-flex; align-items:center; gap:5px; font:600 10.5px/1.3 var(--font-texto); letter-spacing:.06em; text-transform:uppercase; white-space:nowrap; }
+.situacao::before{ content:""; width:14px; height:14px; flex:none; background:currentColor; -webkit-mask:var(--ic-check) center/contain no-repeat; mask:var(--ic-check) center/contain no-repeat; }
+.situacao--sim{ color:var(--f-ok); }
+.situacao--cond{ color:var(--f-atencao); } .situacao--cond::before{ -webkit-mask-image:var(--ic-alerta); mask-image:var(--ic-alerta); }
+.situacao--nao{ color:var(--f-neg); } .situacao--nao::before{ -webkit-mask-image:var(--ic-x); mask-image:var(--ic-x); }
+
+/* Pílula e marca "Exemplo" (some quando exemplo: false) */
+.pilula{ display:inline-flex; align-items:center; gap:6px; min-height:22px; padding:3px 10px; border:1px solid var(--f-fio-forte); border-radius:var(--r-pilula); font:600 9.5px/1.2 var(--font-texto); letter-spacing:.1em; text-transform:uppercase; color:var(--f-titulo); white-space:nowrap; }
+.pilula--exemplo{ border-color:var(--f-atencao); color:var(--f-atencao); }
+.pilula--exemplo::before{ content:""; width:12px; height:12px; flex:none; background:currentColor; -webkit-mask:var(--ic-frasco) center/contain no-repeat; mask:var(--ic-frasco) center/contain no-repeat; }
+.sem-exemplo .so-exemplo{ display:none!important; }
+
+/* Logo do cliente: arquivo da ficha de marca, na cor original, nunca recolorido */
+.logo-cliente{ display:inline-grid; place-items:center; min-width:0; }
+.logo-cliente img{ max-height:var(--logo-a,96px); width:auto; max-width:100%; }
+.logo-cliente.com-placa{ padding:.45em .8em; border-radius:var(--r-placa); background:var(--branco); }
+/* Logotipo tipográfico das marcas fictícias (é fictícia: pode ser desenhada com a fonte dela) */
+.marca-ficticia{ display:inline-flex; align-items:baseline; gap:.2em; font-family:var(--cliente-fonte-titulo); font-weight:700; line-height:1; letter-spacing:-.01em; color:var(--cliente-cor-2); white-space:nowrap; }
+.marca-ficticia b{ font-weight:inherit; color:var(--cliente-cor-3); }
+.marca-ficticia--placa{ padding:.42em .72em; border-radius:var(--r-placa); background:var(--cliente-cor-1); }
+
+/* ---------- 5. A mesa (tela) e as folhas A4 ---------- */
+.mesa{ display:flex; flex-direction:column; align-items:center; gap:28px; padding:28px 16px 64px; }
+.folha{
+  position:relative; display:flex; flex-direction:column;
+  width:var(--folha-l); height:var(--folha-a); padding:var(--folha-pad); overflow:visible;
+  box-shadow:0 0 0 1px var(--f-fio);
+}
+.folha > *{ min-width:0; flex-shrink:0; }
+.folha__rodape{ margin-top:auto; display:flex; justify-content:space-between; align-items:flex-end; gap:20px; padding-top:9px; border-top:1px solid var(--f-fio); font:400 9.5px/1.45 var(--font-texto); color:var(--f-legenda); }
+.folha__rodape img{ width:84px; height:auto; flex:none; }
+.folha__rodape p{ max-width:72ch; }
+
+/* Fólio da folha interna: restaurante à esquerda, número da página à direita, Fio com Fenda embaixo */
+.folio{ display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:6px 16px; font:600 9.5px/1.3 var(--font-texto); letter-spacing:.2em; text-transform:uppercase; color:var(--f-apoio); }
+.folio > span:first-child{ display:block; min-width:0; }
+.folio > span:first-child::before{ content:""; display:inline-block; width:16px; height:2px; margin-right:.8em; vertical-align:middle; background:var(--f-pavio); }
+.folio b{ color:var(--f-titulo); font-weight:700; }
+.folio__dir{ display:inline-flex; align-items:center; gap:12px; white-space:nowrap; }
+.folio > .fio-fenda{ grid-column:1 / -1; margin-top:4px; }
+
+/* Cabeçalho da página: Contagem + título que conclui + apoio */
+.pg-cab{ display:grid; grid-template-columns:auto minmax(0,1fr); gap:6px 18px; align-items:end; margin-top:20px; }
+.pg-cab .contagem{ font-size:56px; grid-row:span 2; align-self:start; margin-top:2px; }
+.pg-cab h2{ font-size:var(--r-titulo); max-width:22ch; }
+.pg-cab p{ font-size:var(--r-apoio); line-height:1.5; color:var(--f-apoio); max-width:62ch; }
+.rotulo{ display:block; font:600 var(--r-sobre)/1.35 var(--font-texto); letter-spacing:.18em; text-transform:uppercase; color:var(--f-enfase); }
+.h-bloco{ font-size:15px; line-height:1.05; letter-spacing:-.035em; }
+
+/* Grades internas */
+.g2{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px 22px; }
+.g4{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; }
+.mt-1{ margin-top:6px; } .mt-2{ margin-top:10px; } .mt-3{ margin-top:14px; } .mt-4{ margin-top:18px; } .mt-5{ margin-top:24px; }
+
+/* Listas com Seta A (sempre para a direita ou para cima) */
+.lista-seta > li{ position:relative; padding-left:16px; font-size:var(--r-apoio); line-height:1.5; color:var(--f-texto); }
+.lista-seta > li + li{ margin-top:5px; }
+.lista-seta > li::before{ content:""; position:absolute; left:0; top:.42em; width:.66em; height:.58em; background:var(--f-ignicao); -webkit-mask:var(--seta-a) center/contain no-repeat; mask:var(--seta-a) center/contain no-repeat; transform:rotate(90deg); }
+
+/* Tabela de consulta (vira cartões no celular pelo script data-projeta-responsive="v1") */
+.table-wrap{ min-width:0; border-top:2px solid var(--f-fio-forte); }
+.table-wrap > table{ width:100%; }
+table.consulta th{ text-align:left; font:600 9px/1.35 var(--font-texto); letter-spacing:.14em; text-transform:uppercase; color:var(--f-apoio); padding:8px 10px 7px 0; border-bottom:1px solid var(--f-fio); vertical-align:bottom; }
+table.consulta td{ padding:5px 10px 5px 0; font-size:11.5px; line-height:1.4; color:var(--f-texto); border-bottom:1px solid var(--f-fio); vertical-align:top; }
+table.consulta td:first-child{ color:var(--f-titulo); font-weight:600; }
+table.consulta th:last-child,table.consulta td:last-child{ padding-right:0; }
+table.consulta caption{ caption-side:bottom; text-align:left; padding-top:6px; font-size:var(--r-regua); line-height:1.45; color:var(--f-legenda); }
+table.consulta .num{ font-family:var(--font-titulo); font-stretch:var(--largo); font-weight:500; letter-spacing:-.03em; white-space:nowrap; font-variant-numeric:lining-nums tabular-nums; color:var(--f-titulo); }
+table.consulta .sem-dado{ display:inline-block; width:28px; height:2px; vertical-align:middle; background:var(--f-legenda); }
+
+/* Caixas de texto: aviso, nota, regra */
+.aviso,.nota{ position:relative; padding:11px 14px 11px 40px; border-radius:14px; font-size:11.5px; line-height:1.5; color:var(--f-texto); background:var(--f-painel); }
+.aviso::before,.nota::before{ content:""; position:absolute; left:14px; top:12px; width:16px; height:16px; background:var(--f-atencao); -webkit-mask:var(--ic-alerta) center/contain no-repeat; mask:var(--ic-alerta) center/contain no-repeat; }
+.nota::before{ background:var(--f-info); -webkit-mask-image:var(--ic-info); mask-image:var(--ic-info); }
+.aviso strong,.nota strong{ display:block; margin-bottom:2px; font:700 11px/1.3 var(--font-texto); letter-spacing:.08em; text-transform:uppercase; color:var(--f-titulo); }
+
+/* ---------- 6. Capa (folha 1) ---------- */
+.capa{ padding:15mm 15mm 12mm; }
+.capa__topo{ display:flex; justify-content:space-between; align-items:flex-start; gap:16px; }
+.capa__data{ font:600 10px/1.6 var(--font-texto); letter-spacing:.16em; text-transform:uppercase; color:var(--f-legenda); text-align:right; }
+.capa__moldura{ align-self:center; margin-top:auto; width:min(100%, 440px); min-height:250px; }
+.capa__moldura .marca-ficticia{ font-size:50px; }
+.capa__moldura .logo-cliente{ --logo-a:120px; }
+.capa__nome{ margin-top:46px; font-size:60px; line-height:.96; letter-spacing:-.06em; max-width:none; }
+.capa__mes{ display:block; margin-top:10px; font-size:30px; letter-spacing:-.05em; color:var(--f-ignicao); }
+.capa__periodo{ margin-top:18px; font-size:14px; line-height:1.55; color:var(--f-apoio); }
+.capa__periodo b{ font-weight:600; }
+.capa__indice{ margin-top:auto; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px 18px; padding-top:14px; border-top:1px solid var(--f-fio); }
+.capa__indice li{ display:flex; gap:10px; align-items:baseline; font-size:11.5px; line-height:1.35; color:var(--f-apoio); }
+.capa__indice .contagem{ font-size:15px; color:var(--f-titulo); }
+.capa__indice li.anexo .contagem{ --dig:1; }
+.capa__credito{ display:flex; flex-direction:column; gap:4px; font-size:11px; line-height:1.45; color:var(--f-apoio); }
+.capa__credito b{ font:600 9.5px/1.3 var(--font-texto); letter-spacing:.2em; text-transform:uppercase; color:var(--f-titulo); }
+.capa .folha__rodape{ align-items:center; margin-top:22px; }
+.capa .folha__rodape img{ width:110px; }
+.so-neutro{ display:none!important; }
+.modo-neutro .so-neutro{ display:block!important; }
+.modo-neutro .so-padrao{ display:none!important; }
+
+/* ---------- 7. Folha 2: o mês em uma página ---------- */
+.resumo{ counter-reset:frase; display:grid; gap:8px; }
+.resumo li{ display:grid; grid-template-columns:30px minmax(0,1fr); gap:12px; align-items:baseline; font-size:14.5px; line-height:1.45; font-weight:500; color:var(--f-titulo); }
+.resumo li::before{ counter-increment:frase; content:"0" counter(frase); font:600 16px/1 var(--font-titulo); font-stretch:var(--largo); letter-spacing:-.04em; color:var(--f-ignicao); }
+
+/* Faixa de Telemetria escura: quatro números com marca de origem e comparação */
+.tele{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); border-radius:16px; overflow:hidden; }
+.tele > div{ display:flex; flex-direction:column; gap:6px; padding:14px 14px 13px; }
+.tele > div + div{ box-shadow:inset 1px 0 0 rgba(255,255,255,.16); }
+.tele__valor{ font:500 32px/.9 var(--font-titulo); font-stretch:var(--largo); letter-spacing:-.06em; color:#FFFFFF; white-space:nowrap; font-variant-numeric:lining-nums tabular-nums; }
+.tele__valor small{ font-size:.6em; color:var(--f-enfase); letter-spacing:-.02em; }
+.tele__rotulo{ font:600 9.5px/1.3 var(--font-texto); letter-spacing:.1em; text-transform:uppercase; color:#FFFFFF; }
+.tele__comp{ font-size:10.5px; line-height:1.35; color:var(--fumaca-200); }
+.tele .origem{ align-self:flex-start; }
+.tele__var{ display:inline-flex; align-items:center; gap:4px; font:600 10.5px/1.3 var(--font-texto); color:var(--positivo); }
+.tele__var .ic{ width:13px; height:13px; }
+
+/* ---------- 8. Gráficos ---------- */
+.grafico{ min-width:0; }
+.leitura{ padding:12px 14px; border-left:3px solid var(--f-fio-forte); font-size:12px; line-height:1.5; color:var(--f-texto); }
+.leitura b{ display:block; margin-bottom:3px; font:700 9.5px/1.3 var(--font-texto); letter-spacing:.16em; text-transform:uppercase; color:var(--f-titulo); }
+.cartela{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+.cartela > div{ padding:11px 12px; border-radius:14px; background:var(--f-painel); display:flex; flex-direction:column; gap:5px; }
+.cartela__valor{ font:500 26px/.95 var(--font-titulo); font-stretch:var(--largo); letter-spacing:-.05em; color:var(--f-titulo); white-space:nowrap; font-variant-numeric:lining-nums tabular-nums; }
+.cartela__rotulo{ font:600 9.5px/1.3 var(--font-texto); letter-spacing:.1em; text-transform:uppercase; color:var(--f-titulo); }
+.cartela .regua{ font-size:10px; }
+
+/* ---------- 9. Folha 5: o que fizemos ---------- */
+.frentes{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.frente{ padding:18px 18px; border-radius:var(--r-cartao); background:var(--f-painel); border:1px solid var(--f-fio); }
+.frente h3{ font-size:14px; letter-spacing:-.03em; padding-bottom:8px; margin-bottom:9px; border-bottom:1px solid var(--f-fio-forte); }
+.frente .lista-seta > li{ font-size:12.5px; }
+.frente .lista-seta > li + li{ margin-top:7px; }
+.frente .regua{ margin-top:8px; }
+
+/* ---------- 10. Folha 6: etapas do método e aprendizados ---------- */
+.etapas{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; }
+.etapa{ display:flex; flex-direction:column; gap:6px; padding:12px; border-radius:var(--r-cartao); background:var(--f-painel); border:1px solid var(--f-fio); }
+.etapa.anel{ border-color:transparent; background:var(--branco); }
+.etapa .contagem{ font-size:30px; color:var(--f-titulo); }
+.etapa b{ font:700 13px/1.05 var(--font-titulo); font-stretch:var(--largo); text-transform:uppercase; letter-spacing:-.03em; color:var(--f-titulo); }
+.etapa .situacao{ white-space:normal; align-items:flex-start; }
+.etapa p{ font-size:11px; line-height:1.45; color:var(--f-apoio); }
+.status{ display:inline-flex; align-items:center; gap:6px; font:600 10.5px/1.3 var(--font-texto); letter-spacing:.06em; text-transform:uppercase; color:var(--f-titulo); }
+.aprendizados{ display:grid; gap:10px; counter-reset:aprend; }
+.aprendizado{ display:grid; grid-template-columns:34px minmax(0,1fr) minmax(0,.82fr); gap:6px 16px; padding:15px 0; border-top:1px solid var(--f-fio); }
+.aprendizado:last-child{ border-bottom:1px solid var(--f-fio); }
+.aprendizado .contagem{ font-size:24px; color:var(--f-titulo); grid-row:span 2; }
+.aprendizado h3{ font-size:14.5px; letter-spacing:-.03em; grid-column:2 / -1; }
+.aprendizado__vimos,.aprendizado__muda{ font-size:11.5px; line-height:1.5; color:var(--f-texto); }
+.aprendizado__vimos > b,.aprendizado__muda > b{ display:block; margin-bottom:2px; font:700 9.5px/1.3 var(--font-texto); letter-spacing:.14em; text-transform:uppercase; color:var(--f-apoio); }
+.aprendizado__vimos .origem{ margin-top:6px; }
+
+/* ---------- 11. Folha 7: próximos passos ---------- */
+.numeros th:nth-child(1){ width:24%; } .numeros th:nth-child(2),.numeros th:nth-child(3){ width:12.5%; } .numeros th:nth-child(4){ width:13%; } .numeros th:nth-child(5){ width:14%; }
+.passos-tab th:nth-child(1){ width:31%; } .passos-tab th:nth-child(2){ width:27%; } .passos-tab th:nth-child(3){ width:9%; }
+.passos-tab td:nth-child(3){ white-space:nowrap; }
+.decisoes{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.decisao{ padding:14px 16px; border-radius:var(--r-cartao); border:1.5px solid var(--f-fio-forte); }
+.decisao p{ font-size:12px; line-height:1.5; color:var(--f-texto); }
+.decisao .rotulo{ margin-bottom:5px; }
+.reuniao{ display:flex; align-items:center; gap:14px; padding:14px 16px; border-radius:var(--r-cartao); background:var(--f-painel); }
+.reuniao .ic{ width:26px; height:26px; color:var(--f-titulo); }
+.reuniao p{ font-size:12.5px; line-height:1.5; color:var(--f-texto); }
+
+/* ---------- 12. Folha 8: régua e glossário ---------- */
+.reguas{ display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; }
+.reguas > div{ display:flex; flex-direction:column; gap:6px; }
+.reguas p{ font-size:11px; line-height:1.45; color:var(--f-texto); }
+.glossario{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 22px; }
+.glossario > div{ padding:8px 0; border-bottom:1px solid var(--f-fio); }
+.glossario dt{ font:700 11.5px/1.3 var(--font-texto); color:var(--f-titulo); }
+.glossario dd{ margin-top:2px; font-size:11px; line-height:1.45; color:var(--f-texto); }
+.resultado-varia{ padding:16px 18px; border-radius:var(--r-cartao); border:2px solid var(--f-titulo); }
+.resultado-varia strong{ display:block; font:700 15px/1.05 var(--font-titulo); font-stretch:var(--largo); letter-spacing:-.03em; text-transform:uppercase; color:var(--f-titulo); margin-bottom:6px; }
+.resultado-varia p{ font-size:12px; line-height:1.5; color:var(--f-texto); }
+.id-projeta{ font-size:10.5px; line-height:1.5; color:var(--f-legenda); }
+
+/* ---------- 13. Anexo A: criativos do mês (camada 1: só a marca do restaurante) ---------- */
+.criativos{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px 20px; }
+.criativo{ display:grid; grid-template-columns:160px minmax(0,1fr); gap:12px; align-items:start; padding-bottom:12px; border-bottom:1px solid var(--f-fio); }
+.criativo dl{ display:grid; gap:4px; }
+.criativo dl > div{ display:grid; grid-template-columns:56px minmax(0,1fr); gap:6px; font-size:10.5px; line-height:1.4; }
+.criativo dt{ font-weight:600; color:var(--f-apoio); letter-spacing:.02em; }
+.criativo dd{ color:var(--f-texto); }
+.criativo dd .origem{ margin-left:4px; vertical-align:-1px; }
+.criativo .situacao{ white-space:normal; align-items:flex-start; }
+.criativo .situacao::before{ margin-top:1px; }
+.criativo__nome{ display:block; margin-bottom:6px; font:600 9.5px/1.35 ui-monospace,"SF Mono",Menlo,Consolas,monospace; color:var(--f-titulo); overflow-wrap:anywhere; }
+/* Peça em escala real por container query: 1 u = 1/1080 da largura */
+.peca-mini{ container-type:inline-size; position:relative; width:100%; aspect-ratio:1080/1350; border-radius:6px; overflow:hidden; box-shadow:0 0 0 1px var(--f-fio); }
+.peca-mini.story{ aspect-ratio:1080/1920; }
+.peca-mini__in{ --u:calc(100cqw / 1080); position:absolute; inset:0; display:flex; flex-direction:column; padding:calc(var(--u) * 60); background:var(--cliente-cor-1); color:var(--cliente-cor-2); font-family:var(--cliente-fonte-texto); }
+.peca-mini__in .marca-ficticia{ font-size:calc(var(--u) * 58); align-self:flex-start; }
+.peca-mini__foto{ flex:1 1 auto; min-height:0; margin-top:calc(var(--u) * 36); display:grid; place-items:center; align-content:center; gap:calc(var(--u) * 10); padding:calc(var(--u) * 30); border-radius:calc(var(--u) * 28); background:color-mix(in srgb, var(--cliente-cor-2) 16%, var(--cliente-cor-1)); border:calc(var(--u) * 4) dashed color-mix(in srgb, var(--cliente-cor-2) 55%, var(--cliente-cor-1)); text-align:center; font-size:calc(var(--u) * 34); line-height:1.3; color:var(--cliente-cor-2); }
+.peca-mini__foto b{ font-weight:600; font-size:calc(var(--u) * 40); color:var(--cliente-cor-2); letter-spacing:.06em; text-transform:uppercase; }
+.peca-mini__foto svg{ width:calc(var(--u) * 120); height:calc(var(--u) * 120); stroke:var(--cliente-cor-3); fill:none; stroke-width:1.75; stroke-linecap:round; stroke-linejoin:round; max-width:none; }
+.peca-mini__titulo{ margin-top:calc(var(--u) * 34); font-family:var(--cliente-fonte-titulo); font-weight:700; font-size:calc(var(--u) * 92); line-height:1.02; letter-spacing:-.01em; color:var(--cliente-cor-2); }
+.peca-mini__titulo em{ font-style:normal; color:var(--cliente-cor-3); }
+.peca-mini__linha{ display:flex; align-items:flex-end; justify-content:space-between; gap:calc(var(--u) * 24); margin-top:calc(var(--u) * 20); }
+.peca-mini__preco{ font-family:var(--cliente-fonte-titulo); font-weight:700; font-size:calc(var(--u) * 92); line-height:1; color:var(--cliente-cor-3); white-space:nowrap; }
+.peca-mini__preco small{ font-size:.5em; margin-right:.12em; }
+.peca-mini__cond{ font-size:calc(var(--u) * 30); line-height:1.3; text-align:right; color:var(--cliente-cor-2); }
+.peca-mini__botao{ margin-top:calc(var(--u) * 26); align-self:flex-start; padding:calc(var(--u) * 20) calc(var(--u) * 40); border-radius:999px; background:var(--cliente-cor-3); color:var(--cliente-cor-1); font-weight:600; font-size:calc(var(--u) * 34); line-height:1; }
+.peca-mini__play{ position:absolute; left:50%; top:46%; width:calc(var(--u) * 150); height:calc(var(--u) * 150); transform:translate(-50%,-50%); border-radius:50%; background:var(--cliente-cor-3); display:grid; place-items:center; }
+.peca-mini__play svg{ width:44%; height:44%; fill:var(--cliente-cor-1); stroke:none; margin-left:8%; max-width:none; }
+
+/* ---------- 14. Tela: barra de ferramentas e instruções (não vão para o papel) ---------- */
+.ferramentas{ position:sticky; top:0; z-index:50; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px 16px; padding:10px max(16px, calc((100% - 1100px) / 2)); background:var(--noite); box-shadow:0 1px 0 var(--fio-escuro); }
+.ferramentas__marca{ display:flex; align-items:center; gap:14px; min-width:0; }
+.ferramentas__marca img{ width:96px; height:auto; flex:none; }
+.ferramentas__marca span{ font:600 10px/1.3 var(--font-texto); letter-spacing:.22em; text-transform:uppercase; color:var(--fumaca-200); }
+.ferramentas__acoes{ display:flex; flex-wrap:wrap; gap:8px; }
+.botao{ display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:48px; padding:10px 20px; border-radius:var(--r-pilula); font:700 12px/1.15 var(--font-display); letter-spacing:.02em; text-transform:uppercase; color:#FFFFFF; border:1.5px solid #FFFFFF5C; text-align:center; }
+.botao:hover{ border-color:#FFFFFF; }
+.botao--cheio{ background:var(--ignicao); border-color:var(--ignicao); font-weight:700; }
+.botao[aria-pressed="true"]{ background:#FFFFFF; color:var(--noite); border-color:#FFFFFF; }
+.botao .ic{ width:18px; height:18px; }
+.instrucoes{ width:var(--folha-l); max-width:100%; padding:22px 24px; border-radius:var(--r-cartao); background:var(--superficie); border:1px solid var(--fio-escuro); color:var(--fumaca-50); }
+.instrucoes h1{ font-size:24px; letter-spacing:-.05em; }
+.instrucoes > p{ margin-top:8px; font-size:14px; line-height:1.55; color:var(--fumaca-200); max-width:70ch; }
+.instrucoes ol{ margin-top:14px; display:grid; gap:8px; counter-reset:passo; }
+.instrucoes li{ display:grid; grid-template-columns:28px minmax(0,1fr); gap:10px; font-size:13.5px; line-height:1.5; color:var(--fumaca-50); }
+.instrucoes li::before{ counter-increment:passo; content:"0" counter(passo); font:600 14px/1.45 var(--font-titulo); font-stretch:var(--largo); color:var(--chama); }
+.instrucoes code{ background:var(--superficie-alta); color:#FFFFFF; }
+.instrucoes a{ color:var(--chama); }
+
+/* ---------- 15. Celular e telas estreitas: a folha vira bloco corrido ---------- */
+@media (max-width:900px){
+  .mesa{ padding:0 0 40px; gap:0; }
+  .folha{ width:100%; height:auto; min-height:0; padding:28px 16px 20px; box-shadow:none; border-bottom:1px solid var(--fio-escuro); }
+  .capa{ padding:28px 16px 20px; }
+  .folha__rodape{ margin-top:28px; }
+  .instrucoes{ border-radius:0; border-left:0; border-right:0; padding:22px 16px; }
+  .ferramentas{ padding:10px 16px; }
+}
+@media (max-width:640px){
+  :root{ --r-titulo:26px; --r-corpo:15px; --r-apoio:14px; --r-regua:12px; --r-sobre:11px; }
+  .g2,.frentes,.decisoes,.glossario,.criativos{ grid-template-columns:minmax(0,1fr); }
+  .g4,.etapas{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .tele{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .tele__valor{ font-size:clamp(24px, 8vw, 32px); }
+  .tele > div:nth-child(3){ box-shadow:inset 0 1px 0 rgba(255,255,255,.16); }
+  .tele > div:nth-child(4){ box-shadow:inset 1px 0 0 rgba(255,255,255,.16), inset 0 1px 0 rgba(255,255,255,.16); }
+  .reguas{ grid-template-columns:minmax(0,1fr); }
+  .cartela{ grid-template-columns:minmax(0,1fr); }
+  .capa__nome{ font-size:clamp(34px, 11vw, 52px); }
+  .capa__mes{ font-size:clamp(20px, 6.4vw, 28px); }
+  .capa__indice{ grid-template-columns:minmax(0,1fr); }
+  .capa__moldura{ margin-top:36px; min-height:170px; }
+  .capa__moldura .marca-ficticia{ font-size:clamp(28px, 9vw, 40px); }
+  .pg-cab{ grid-template-columns:minmax(0,1fr); }
+  .pg-cab .contagem{ font-size:44px; grid-row:auto; }
+  .resumo li{ font-size:16px; }
+  .aprendizado{ grid-template-columns:minmax(0,1fr); }
+  .aprendizado .contagem{ grid-row:auto; }
+  .aprendizado h3{ grid-column:auto; }
+  .criativo{ grid-template-columns:120px minmax(0,1fr); }
+  .criativo dl > div{ grid-template-columns:minmax(0,1fr); gap:0; font-size:12.5px; }
+  table.consulta td{ font-size:14px; }
+  .folha__rodape{ flex-direction:column; align-items:flex-start; font-size:11.5px; }
+  .folio .pilula{ display:none; }
+  .capa .folha__rodape{ align-items:flex-start; }
+  .ferramentas{ position:static; }
+  .cartela .regua,.criativo dd .origem{ font-size:12px; }
+  .ferramentas__marca span{ display:none; }
+  .ferramentas__acoes{ width:100%; }
+  .ferramentas__acoes .botao{ flex:1 1 140px; padding-inline:12px; }
+  .lista-seta > li,.frente .lista-seta > li,.aprendizado__vimos,.aprendizado__muda,.leitura,.etapa p,.decisao p,.glossario dd,.reguas p,.aviso,.nota,.resultado-varia p{ font-size:14px; }
+
+  /* Tabela de consulta vira cartões (script data-projeta-responsive="v1") */
+  table.vira-cartao,table.vira-cartao tbody,table.vira-cartao tr,table.vira-cartao td{ display:block; width:100%!important; }
+  table.vira-cartao thead{ position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0 0 0 0); clip-path:inset(50%); white-space:nowrap; border:0; }
+  table.vira-cartao tr{ padding:14px 0 4px; border-bottom:1px solid var(--f-fio); }
+  table.vira-cartao td{ border-bottom:0; padding:0 0 8px!important; white-space:normal!important; }
+  table.vira-cartao td::before{ content:attr(data-label); display:block; margin-bottom:2px; font:600 11px/1.4 var(--font-texto); letter-spacing:.14em; text-transform:uppercase; color:var(--f-legenda); }
+  table.vira-cartao td:first-child{ font:700 17px/1.1 var(--font-titulo); font-stretch:var(--largo); letter-spacing:-.03em; text-transform:uppercase; color:var(--f-titulo); padding-bottom:10px!important; }
+  table.vira-cartao td:first-child::before{ display:none; }
+  table.vira-cartao{ display:flex; flex-direction:column; }
+  table.vira-cartao caption{ display:block; order:2; width:100%; padding:10px 0 0; }
+}
+@media (max-width:380px){
+  .g4,.etapas{ grid-template-columns:minmax(0,1fr); }
+  .criativo{ grid-template-columns:minmax(0,1fr); }
+  .criativo .peca-mini{ max-width:180px; }
+}
+
+/* ---------- 16. Papel: A4, uma folha por página, cores exatas ---------- */
+@page{ size:A4; margin:0; }
+@media print{
+  html,body{ background:#FFFFFF; }
+  *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  .ferramentas,.instrucoes{ display:none!important; }
+  .mesa{ display:block; padding:0; }
+  .folha{ width:210mm; height:297mm; margin:0; padding:var(--folha-pad); box-shadow:none; border:0; break-after:page; page-break-after:always; overflow:hidden; }
+  .capa{ padding:15mm 15mm 12mm; }
+  .folha:last-of-type{ break-after:auto; page-break-after:auto; }
+  .chama--pulsa,.anel--gira::after{ animation:none!important; }
+  /* No papel, o Anel vira contorno chapado com o arco em cima e à direita (a máscara composta não imprime) */
+  .anel::after{ -webkit-mask:none!important; mask:none!important; padding:0; background:none!important; border:2px solid var(--fio-claro); border-top-color:var(--ignicao); border-right-color:var(--ignicao); }
+  .modo-neutro .anel::after{ border-top-color:var(--noite); border-right-color:var(--noite); }
+  .grafico,.frente,.etapa,.criativo,.aprendizado,.tele,.decisao{ break-inside:avoid; }
+  a{ color:inherit; text-decoration:none; }
+}
+@media (prefers-reduced-motion: reduce){
+  .chama--pulsa,.anel--gira::after{ animation:none!important; }
+}
+/* Celular estreito: os dois botões da barra empilham em vez de quebrar o texto em três linhas */
+@media screen and (max-width:380px){ .ferramentas__acoes .botao{ flex-basis:100%; } }
+</style>
+</head>
+<body>
+
+<!-- Barra da tela (não sai no papel) -->
+<div class="ferramentas" role="toolbar" aria-label="Ferramentas do relatório">
+  <div class="ferramentas__marca"><img src="assets/brand/projeta-reduzida-negativa.svg" alt="Projeta Food" width="239" height="56"><span>Relatório mensal · camada 2</span></div>
+  <div class="ferramentas__acoes">
+    <button class="botao so-exemplo" type="button" id="alterna-neutro" aria-pressed="false"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 18a6 6 0 0 0 0-12v12z"/></svg><span>Ver o modo neutro</span></button>
+    <button class="botao botao--cheio" type="button" id="imprimir"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"/><rect x="6" y="14" width="12" height="8" rx="1"/></svg><span>Imprimir ou salvar PDF</span></button>
+  </div>
+</div>
+
+<main class="mesa" id="relatorio">
+
+  <!-- Instruções da tela (não saem no papel) -->
+  <section class="instrucoes so-exemplo" aria-labelledby="instrucoes-titulo">
+    <p class="pavio">Modelo · dados fictícios</p>
+    <h1 id="instrucoes-titulo" class="mt-2">Como preencher este <em>relatório</em></h1>
+    <p>Este é o modelo do relatório mensal que a Projeta envia ao dono do restaurante. A ordem das páginas, a régua de cada número e a co-assinatura são fixas; o nome, o logo, as cores dos dados e os números são do cliente. Kaze Sushi e Nonna Rosa são marcas fictícias, e todos os números são exemplos.</p>
+    <ol>
+      <li><span>Duplique o arquivo na pasta da skill, ao lado de <code>assets/</code> e <code>pviz.js</code>, com o nome <code>cliente_relatorio_aaaa-mm_v1.html</code>.</span></li>
+      <li><span>No topo do arquivo, troque o bloco <code>RELATORIO</code>: nome, logo, cores e fontes da ficha de marca, cor dos dados, período, data de envio e quem atende. Troque <code>exemplo</code> para <code>false</code>.</span></li>
+      <li><span>Troque os números de cada página e os dados de cada gráfico (atributo <code>data-pviz</code>). Todo número leva período, base de comparação, fonte e origem.</span></li>
+      <li><span>Número que não chegou até o fechamento: "sem dado" com o traço. Nunca zero, nunca o número do mês anterior.</span></li>
+      <li><span>Confira o checklist de envio da seção 18.5 do <a href="brand-book.html#s18-5">manual</a> e gere o PDF: <code>python3 exportar_pdf.py cliente_relatorio_aaaa-mm_v1.html</code>.</span></li>
+    </ol>
+  </section>
+
+  <!-- ================================================================
+       FOLHA 1 · CAPA CO-ASSINADA
+       O restaurante é a estrela: logo dele na Moldura O, nome como título.
+       A Projeta assina no rodapé com a reduzida.
+       ================================================================ -->
+  <section class="folha capa campo-noite brasa" id="pg-01" aria-label="Página 1: capa">
+    <div class="capa__topo">
+      <p class="pavio">Relatório mensal</p>
+      <p class="capa__data">Enviado em <span data-r="envio.data">[dd/mm/aaaa]</span><br><span data-r="envio.versao">v1</span></p>
+    </div>
+    <p class="so-exemplo mt-3"><span class="pilula pilula--exemplo">Exemplo · dados fictícios</span></p>
+
+    <div class="moldura-o capa__moldura">
+      <span class="logo-cliente" data-logo-cliente role="img" aria-label="Logotipo de Kaze Sushi" data-r-aria="cliente.nome"><span class="marca-ficticia marca-ficticia--placa" aria-hidden="true" data-rh="logo.tipografico">Kaze <b>Sushi</b></span></span>
+    </div>
+
+    <h1 class="capa__nome acento"><span data-r="cliente.nome">Kaze Sushi</span><span class="capa__mes">Relatório de <span data-r="periodo.mes">setembro/2026</span></span></h1>
+    <p class="capa__periodo"><b>Período:</b> <span data-r="periodo.datas">01 a 30/09/2026</span> · <b>comparação com</b> <span data-r="periodo.comparacao">agosto/2026</span> (<span data-r="periodo.comparacaoDatas">01 a 31/08/2026</span>)</p>
+
+    <ol class="capa__indice" aria-label="O que tem neste relatório">
+      <li><span class="contagem" aria-hidden="true"><span>02</span></span>O mês em uma página</li>
+      <li><span class="contagem" aria-hidden="true"><span>03</span></span>Pedidos e faturamento por canal</li>
+      <li><span class="contagem" aria-hidden="true"><span>04</span></span>Anúncios</li>
+      <li><span class="contagem" aria-hidden="true"><span>05</span></span>O que fizemos</li>
+      <li><span class="contagem" aria-hidden="true"><span>06</span></span>Método e o que aprendemos</li>
+      <li><span class="contagem" aria-hidden="true"><span>07</span></span>Próximos passos</li>
+      <li><span class="contagem" aria-hidden="true"><span>08</span></span>Régua, glossário e aviso</li>
+      <li class="anexo"><span class="contagem" aria-hidden="true"><span>A</span></span>Anexo: criativos do mês</li>
+    </ol>
+
+    <div class="folha__rodape">
+      <div class="capa__credito"><b>Relatório preparado pela Projeta Food</b><span>Atendimento: <span data-r="envio.atendimento">[nome]</span> · contato@projetafood.com.br</span></div>
+      <img class="so-padrao" src="assets/brand/projeta-reduzida-negativa.svg" alt="Projeta Food" width="239" height="56">
+      <img class="so-neutro" src="assets/brand/projeta-reduzida-positiva.svg" alt="Projeta Food" width="239" height="56">
+    </div>
+  </section>
+
+  <!-- ================================================================
+       FOLHA 2 · O MÊS EM UMA PÁGINA
+       Resumo em três frases, Telemetria escura com quatro números e a
+       tabela de números com período, base de comparação e origem.
+       ================================================================ -->
+  <section class="folha campo-branco" id="pg-02" aria-labelledby="pg-02-t">
+    <div class="folio"><span><b data-r="cliente.nome">Kaze Sushi</b>&nbsp;· Relatório <span data-r="periodo.curto">set/2026</span></span><span class="folio__dir"><span class="pilula pilula--exemplo so-exemplo">Exemplo</span>02/08</span><div class="fio-fenda"></div></div>
+    <header class="pg-cab">
+      <span class="contagem" aria-hidden="true"><span>02</span></span>
+      <h2 id="pg-02-t">O mês em <em>uma página</em>.</h2>
+      <p>Quem só tem um minuto lê esta página e a página 7.</p>
+    </header>
+
+    <p class="rotulo mt-5">Resumo em três frases</p>
+    <ol class="resumo mt-2">
+      <li>Setembro fechou com 1.284 pedidos, 9% a mais que agosto, e o cardápio próprio passou de 24% para 31% dos pedidos.</li>
+      <li>Os anúncios receberam R$ 4.180,00 e trouxeram 236 pedidos rastreados; cada pedido custou R$ 17,71, abaixo da meta combinada de R$ 20,00.</li>
+      <li>O combo de quinta foi o que mais pesou; em outubro, a prioridade é levá-lo para a sexta e fotografar os seis itens que ainda estão sem foto.</li>
+    </ol>
+
+    <div class="tele campo-grafite mt-5" role="group" aria-label="Quatro números do mês">
+      <div><span class="origem" data-origem="medido">Medido</span><span class="tele__valor">1.284</span><span class="tele__rotulo">Pedidos no mês</span><span class="tele__comp">ago/2026: 1.178 · <span class="tele__var"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg>9,0% a mais</span></span></div>
+      <div><span class="origem" data-origem="calculado">Calculado</span><span class="tele__valor">31<small>%</small></span><span class="tele__rotulo">No cardápio próprio</span><span class="tele__comp">ago/2026: 24% · 398 de 1.284 pedidos</span></div>
+      <div><span class="origem" data-origem="calculado">Calculado</span><span class="tele__valor"><small>R$</small>17,71</span><span class="tele__rotulo">Custo por pedido</span><span class="tele__comp">ago/2026: R$ 21,43 · meta R$ 20,00</span></div>
+      <div><span class="origem" data-origem="medido">Medido</span><span class="tele__valor">4,7</span><span class="tele__rotulo">Nota no Google</span><span class="tele__comp">ago/2026: 4,6 · 46 avaliações novas</span></div>
+    </div>
+    <p class="regua mt-2">Período: 01 a 30/09/2026, comparado com 01 a 31/08/2026 · base: 1 restaurante · fontes: painel do cardápio próprio, painéis dos aplicativos de delivery, gerenciador de anúncios e Perfil da Empresa no Google. Custo por pedido = investimento em anúncios dividido pelos pedidos rastreados.</p>
+
+    <p class="rotulo mt-5">Números do mês com régua</p>
+    <div class="table-wrap mt-2">
+      <table class="consulta numeros">
+        <caption>Variação sempre contra o mês de comparação. Pontos percentuais: diferença entre duas porcentagens (de 24% para 31% são 7 pontos).</caption>
+        <thead><tr><th scope="col">Indicador</th><th scope="col">set/2026</th><th scope="col">ago/2026</th><th scope="col">Variação</th><th scope="col">Origem</th><th scope="col">Fonte</th></tr></thead>
+        <tbody>
+          <tr><td>Pedidos, todos os canais</td><td class="num">1.284</td><td class="num">1.178</td><td>9,0% a mais</td><td><span class="origem" data-origem="medido">Medido</span></td><td>Painéis dos canais</td></tr>
+          <tr><td>Faturamento, todos os canais</td><td class="num">R$ 90.430</td><td class="num">R$ 82.118</td><td>10,1% a mais</td><td><span class="origem" data-origem="medido">Medido</span></td><td>Painéis dos canais</td></tr>
+          <tr><td>Valor médio do pedido</td><td class="num">R$ 70,43</td><td class="num">R$ 69,71</td><td>1,0% a mais</td><td><span class="origem" data-origem="calculado">Calculado</span></td><td>Faturamento dividido por pedidos</td></tr>
+          <tr><td>Pedidos no cardápio próprio</td><td class="num">398</td><td class="num">283</td><td>40,6% a mais</td><td><span class="origem" data-origem="medido">Medido</span></td><td>Painel do cardápio próprio</td></tr>
+          <tr><td>Fatia do cardápio próprio</td><td class="num">31,0%</td><td class="num">24,0%</td><td>7 pontos a mais</td><td><span class="origem" data-origem="calculado">Calculado</span></td><td>398 de 1.284 pedidos</td></tr>
+          <tr><td>Investimento em anúncios</td><td class="num">R$ 4.180</td><td class="num">R$ 3.900</td><td>7,2% a mais</td><td><span class="origem" data-origem="medido">Medido</span></td><td>Gerenciador de anúncios</td></tr>
+          <tr><td>Custo por pedido nos anúncios</td><td class="num">R$ 17,71</td><td class="num">R$ 21,43</td><td>17,4% a menos</td><td><span class="origem" data-origem="calculado">Calculado</span></td><td>Investimento dividido por 236 pedidos</td></tr>
+          <tr><td>Taxa do aplicativo no plano do restaurante</td><td class="num">[n]%</td><td class="num">[n]%</td><td>sem mudança</td><td><span class="origem" data-origem="referencia">Referência</span></td><td>Contrato do restaurante com o aplicativo</td></tr>
+          <tr><td>Pessoas alcançadas pelo conteúdo</td><td class="num">cerca de 18.000</td><td class="num">cerca de 15.500</td><td>cerca de 16% a mais</td><td><span class="origem" data-origem="estimado">Estimado</span></td><td>Soma dos alcances das publicações, com repetição</td></tr>
+          <tr><td>Nota no aplicativo de delivery</td><td><span class="sem-dado" role="img" aria-label="sem dado"></span> sem dado</td><td class="num">4,8</td><td>sem base</td><td><span class="origem" data-origem="sem-dado">Sem dado</span></td><td>Dado em validação: acesso ao painel do aplicativo pendente</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="folha__rodape">
+      <p><span data-r="cliente.nome">Kaze Sushi</span> · Relatório de <span data-r="periodo.mes">setembro/2026</span> · preparado pela Projeta Food. Números do período indicado; resultados variam por operação.<span class="so-exemplo"> Exemplo com marca e números fictícios.</span></p>
+      <img src="assets/brand/projeta-reduzida-positiva.svg" alt="Projeta Food" width="239" height="56">
+    </div>
+  </section>
+
+  <!-- ================================================================
+       FOLHA 3 · PEDIDOS E FATURAMENTO POR CANAL
+       Série principal na cor do cliente (--cliente-cor), comparação em Fumaça.
+       ================================================================ -->
+  <section class="folha campo-branco" id="pg-03" aria-labelledby="pg-03-t">
+    <div class="folio"><span><b data-r="cliente.nome">Kaze Sushi</b>&nbsp;· Relatório <span data-r="periodo.curto">set/2026</span></span><span class="folio__dir"><span class="pilula pilula--exemplo so-exemplo">Exemplo</span>03/08</span><div class="fio-fenda"></div></div>
+    <header class="pg-cab">
+      <span class="contagem" aria-hidden="true"><span>03</span></span>
+      <h2 id="pg-03-t" class="acento">Quase um terço dos pedidos já vem <em>sem comissão</em>.</h2>
+      <p>Pedidos por canal e o cardápio próprio contra os aplicativos de delivery (marketplace).</p>
+    </header>
+
+    <div class="grafico mt-4" data-pviz='{"tipo":"composicao","titulo":"O cardápio próprio cresceu sem tirar do salão","linhas":[{"rotulo":"jul/2026","segmentos":[{"rotulo":"Cardápio próprio","valor":251,"vrotulo":"251"},{"rotulo":"Aplicativos","valor":760,"vrotulo":"760"},{"rotulo":"Salão e retirada","valor":118,"vrotulo":"118"}]},{"rotulo":"ago/2026","segmentos":[{"rotulo":"Cardápio próprio","valor":283,"vrotulo":"283"},{"rotulo":"Aplicativos","valor":775,"vrotulo":"775"},{"rotulo":"Salão e retirada","valor":120,"vrotulo":"120"}]},{"rotulo":"set/2026","segmentos":[{"rotulo":"Cardápio próprio","valor":398,"vrotulo":"398"},{"rotulo":"Aplicativos","valor":745,"vrotulo":"745"},{"rotulo":"Salão e retirada","valor":141,"vrotulo":"141"}]}],"nomes":["Cardápio próprio","Aplicativos","Salão e retirada"],"destaque":0,"periodo":"jul a set/2026","base":"1 restaurante, pedidos por mês","fonte":"painéis dos canais e caixa do salão","origem":"medido","aria":"Pedidos por canal, de julho a setembro de 2026"}'></div>
+
+    <div class="grafico mt-4" data-pviz='{"tipo":"linha","titulo":"A distância para os aplicativos caiu 43%","rotulos":["abr","mai","jun","jul","ago","set"],"series":[{"nome":"Cardápio próprio","valores":[198,214,238,251,283,398]},{"nome":"Aplicativos (marketplace)","valores":[802,790,781,760,775,745],"papel":"contexto"}],"ignicao":{"indice":4,"rotulo":"QR na embalagem"},"altura":225,"periodo":"abr a set/2026","base":"1 restaurante, pedidos por mês","fonte":"painel do cardápio próprio e painéis dos aplicativos","origem":"medido","aria":"Pedidos no cardápio próprio e nos aplicativos, de abril a setembro de 2026"}'></div>
+
+    <div class="g2 mt-4">
+      <div class="table-wrap">
+        <table class="consulta">
+          <caption>set/2026 · faturamento e valor médio: medido nos painéis; fatia: calculada.</caption>
+          <thead><tr><th scope="col">Canal</th><th scope="col">Pedidos</th><th scope="col">Faturamento</th><th scope="col">Valor médio</th></tr></thead>
+          <tbody>
+            <tr><td>Cardápio próprio</td><td class="num">398</td><td class="num">R$ 29.531</td><td class="num">R$ 74,20</td></tr>
+            <tr><td>Aplicativos</td><td class="num">745</td><td class="num">R$ 51.480</td><td class="num">R$ 69,10</td></tr>
+            <tr><td>Salão e retirada</td><td class="num">141</td><td class="num">R$ 9.419</td><td class="num">R$ 66,80</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="leitura"><b>O que os números dizem</b>O pedido do cardápio próprio vale mais (R$ 74,20 contra R$ 69,10 nos aplicativos) e não paga comissão. Ele respondeu por 31% dos pedidos e 33% do faturamento. Os aplicativos caíram 30 pedidos no mês: parte de quem pedia por lá passou a pedir direto.</div>
+    </div>
+
+    <div class="folha__rodape">
+      <p><span data-r="cliente.nome">Kaze Sushi</span> · Relatório de <span data-r="periodo.mes">setembro/2026</span> · preparado pela Projeta Food. Números do período indicado; resultados variam por operação.<span class="so-exemplo"> Exemplo com marca e números fictícios.</span></p>
+      <img src="assets/brand/projeta-reduzida-positiva.svg" alt="Projeta Food" width="239" height="56">
+    </div>
+  </section>
+
+  <!-- ================================================================
+       FOLHA 4 · ANÚNCIOS
+       Investimento, custo por pedido e o caminho do primeiro contato até o
+       pedido (atenção, clique, pedido, recompra). Siglas sempre por extenso.
+       ================================================================ -->
+  <section class="folha campo-branco" id="pg-04" aria-labelledby="pg-04-t">
+    <div class="folio"><span><b data-r="cliente.nome">Kaze Sushi</b>&nbsp;· Relatório <span data-r="periodo.curto">set/2026</span></span><span class="folio__dir"><span class="pilula pilula--exemplo so-exemplo">Exemplo</span>04/08</span><div class="fio-fenda"></div></div>
+    <header class="pg-cab">
+      <span class="contagem" aria-hidden="true"><span>04</span></span>
+      <h2 id="pg-04-t">Mais verba, pedido <em>mais barato</em>.</h2>
+      <p>O investimento subiu 7,2% e os pedidos rastreados, 29,7%: cada pedido custou menos. Os anúncios levam ao cardápio próprio.</p>
+    </header>
+
+    <div class="g2 mt-4">
+      <div class="grafico" data-pviz='{"tipo":"barras","sobretitulo":"Investimento por mês","titulo":"A verba subiu 7%","rotulos":["jul","ago","set"],"valores":[3600,3900,4180],"vrotulos":["R$ 3.600","R$ 3.900","R$ 4.180"],"altura":160,"periodo":"jul a set/2026","base":"1 restaurante","fonte":"gerenciador de anúncios","origem":"medido","aria":"Investimento em anúncios por mês, de julho a setembro de 2026"}'></div>
+      <div class="grafico" data-pviz='{"tipo":"barras","sobretitulo":"Custo por pedido","titulo":"O custo caiu 17%","rotulos":["jul","ago","set"],"valores":[24.83,21.43,17.71],"vrotulos":["R$ 24,83","R$ 21,43","R$ 17,71"],"meta":20,"vmeta":"R$ 20,00","metaRotulo":"meta","altura":160,"periodo":"jul a set/2026","base":"145, 182 e 236 pedidos rastreados","fonte":"gerenciador de anúncios e cardápio próprio","origem":"calculado","aria":"Custo por pedido nos anúncios, de julho a setembro de 2026"}'></div>
+    </div>
+
+    <div class="grafico mt-4" data-pviz='{"tipo":"funil","titulo":"De cada 200 cliques, 15 viraram pedido","etapas":[{"rotulo":"Atenção","valor":52400,"vrotulo":"52.400"},{"rotulo":"Clique","valor":3140,"vrotulo":"3.140"},{"rotulo":"Pedido","valor":236,"vrotulo":"236"},{"rotulo":"Recompra","valor":71,"vrotulo":"71"}],"escala":"log","altura":135,"periodo":"01 a 30/09/2026","base":"campanhas de 1 restaurante","fonte":"gerenciador de anúncios e cardápio próprio","origem":"medido","aria":"Caminho do primeiro contato até o pedido em setembro de 2026"}'></div>
+
+    <div class="cartela mt-4">
+      <div><span class="origem" data-origem="calculado">Calculado</span><span class="cartela__valor">6,0</span><span class="cartela__rotulo">Cliques a cada 100 pessoas</span><span class="regua">Taxa de clique: 3.140 cliques de 52.400 pessoas alcançadas.</span></div>
+      <div><span class="origem" data-origem="calculado">Calculado</span><span class="cartela__valor"><span style="font-size:.6em">R$</span> 4,19</span><span class="cartela__rotulo">Faturamento por real investido</span><span class="regua">236 pedidos × R$ 74,20 de valor médio, dividido por R$ 4.180. Em ago/2026: R$ 3,43.</span></div>
+      <div><span class="origem" data-origem="calculado">Calculado</span><span class="cartela__valor">30%</span><span class="cartela__rotulo">Pediram de novo no mês</span><span class="regua">Recompra: 71 de 236 clientes que chegaram pelo anúncio fizeram um segundo pedido em setembro.</span></div>
+    </div>
+
+    <div class="folha__rodape">
+      <p><span data-r="cliente.nome">Kaze Sushi</span> · Relatório de <span data-r="periodo.mes">setembro/2026</span> · preparado pela Projeta Food. Números do período indicado; resultados variam por operação.<span class="so-exemplo"> Exemplo com marca e números fictícios.</span></p>
+      <img src="assets/brand/projeta-reduzida-positiva.svg" alt="Projeta Food" width="239" height="56">
+    </div>
+  </section>
+
+  <!-- ================================================================
+       FOLHA 5 · O QUE FIZEMOS
+       Entregas do mês por frente: cardápio próprio, anúncios, conteúdo,
+       Google e avaliações. Cada número com origem.
+       ================================================================ -->
+  <section class="folha campo-branco" id="pg-05" aria-labelledby="pg-05-t">
+    <div class="folio"><span><b data-r="cliente.nome">Kaze Sushi</b>&nbsp;· Relatório <span data-r="periodo.curto">set/2026</span></span><span class="folio__dir"><span class="pilula pilula--exemplo so-exemplo">Exemplo</span>05/08</span><div class="fio-fenda"></div></div>
+    <header class="pg-cab">
+      <span class="contagem" aria-hidden="true"><span>05</span></span>
+      <h2 id="pg-05-t">O que fizemos <em>em setembro</em>.</h2>
+      <p>As entregas do mês, frente por frente. Os criativos que foram ao ar estão no anexo A, com o resultado de cada um.</p>
+    </header>
+
+    <div class="frentes mt-5">
+      <article class="frente">
+        <h3>Cardápio <em>próprio</em></h3>
+        <ul class="lista-seta">
+          <li>Combo de quinta publicado em 03/09, com preço fechado e condição na mesma linha.</li>
+          <li>QR da embalagem levado para o lacre da sacola, onde o cliente olha ao abrir.</li>
+          <li>Três itens ganharam foto-mestra aprovada; seis seguem sem foto.</li>
+        </ul>
+        <span class="regua">Fonte: painel do cardápio próprio · 01 a 30/09/2026.</span>
+      </article>
+      <article class="frente">
+        <h3>Anúncios</h3>
+        <ul class="lista-seta">
+          <li>Duas campanhas no ar, as duas levando ao cardápio próprio.</li>
+          <li>Rastreamento de pedido revisado em 12/09: o pedido feito pelo anúncio passou a ser contado no próprio cardápio.</li>
+          <li>Quatro criativos testados; dois mantidos, um ajustado, um trocado.</li>
+        </ul>
+        <span class="regua">Fonte: gerenciador de anúncios · 01 a 30/09/2026.</span>
+      </article>
+      <article class="frente">
+        <h3>Conteúdo</h3>
+        <ul class="lista-seta">
+          <li>14 publicações: 8 posts, 4 vídeos curtos e 2 carrosséis, todas na marca do restaurante.</li>
+          <li>Cerca de 18.000 pessoas alcançadas, somando as publicações (estimado: a mesma pessoa pode contar mais de uma vez).</li>
+          <li>Série "do balcão para a sua casa" com três episódios.</li>
+        </ul>
+        <span class="regua">Fonte: relatórios das redes sociais · 01 a 30/09/2026.</span>
+      </article>
+      <article class="frente">
+        <h3>Google e <em>avaliações</em></h3>
+        <ul class="lista-seta">
+          <li>46 avaliações novas, todas respondidas em até 48 horas.</li>
+          <li>12 fotos novas no Perfil da Empresa e horário do feriado atualizado.</li>
+          <li>Nota subiu de 4,6 para 4,7.</li>
+        </ul>
+        <span class="regua">Fonte: Perfil da Empresa no Google · 01 a 30/09/2026.</span>
+      </article>
+    </div>
+
+    <div class="cartela mt-4">
+      <div><span class="origem" data-origem="medido">Medido</span><span class="cartela__valor">14</span><span class="cartela__rotulo">Publicações</span><span class="regua">ago/2026: 12.</span></div>
+      <div><span class="origem" data-origem="calculado">Calculado</span><span class="cartela__valor">46 <span style="font-size:.6em">de</span> 46</span><span class="cartela__rotulo">Respondidas em 48 horas</span><span class="regua">ago/2026: 31 de 38.</span></div>
+      <div><span class="origem" data-origem="estimado">Estimado</span><span class="cartela__valor">18 mil</span><span class="cartela__rotulo">Pessoas alcançadas</span><span class="regua">Cerca de: soma dos alcances, com repetição.</span></div>
+    </div>
+
+    <div class="nota mt-4"><strong>Fora do relatório</strong>Nenhum dado pessoal de cliente do restaurante (nome, telefone, endereço) entra neste documento, como pede a Lei Geral de Proteção de Dados (LGPD).</div>
+
+    <div class="folha__rodape">
+      <p><span data-r="cliente.nome">Kaze Sushi</span> · Relatório de <span data-r="periodo.mes">setembro/2026</span> · preparado pela Projeta Food. Números do período indicado; resultados variam por operação.<span class="so-exemplo"> Exemplo com marca e números fictícios.</span></p>
+      <img src="assets/brand/projeta-reduzida-positiva.svg" alt="Projeta Food" width="239" height="56">
+    </div>
+  </section>
+
+  <!-- ================================================================
+       FOLHA 6 · ETAPAS DO MÉTODO E O QUE APRENDEMOS
+       Delivery Blindado: Diagnóstico, Estratégia, Execução, Otimização.
+       Etapa ativa com o Anel de Ignição e a Chama de Status.
+       ================================================================ -->
+  <section class="folha campo-branco" id="pg-06" aria-labelledby="pg-06-t">
+    <div class="folio"><span><b data-r="cliente.nome">Kaze Sushi</b>&nbsp;· Relatório <span data-r="periodo.curto">set/2026</span></span><span class="folio__dir"><span class="pilula pilula--exemplo so-exemplo">Exemplo</span>06/08</span><div class="fio-fenda"></div></div>
+    <header class="pg-cab">
+      <span class="contagem" aria-hidden="true"><span>06</span></span>
+      <h2 id="pg-06-t">O que o mês <em>ensinou</em>.</h2>
+      <p>Onde estamos no método e três aprendizados com a prova ao lado. Aprendizado de um mês é hipótese: só vira regra quando se repete.</p>
+    </header>
+
+    <p class="rotulo mt-5">Etapas do método</p>
+    <div class="etapas mt-2">
+      <div class="etapa"><span class="contagem" aria-hidden="true"><span>01</span></span><b>Diagnóstico</b><span class="situacao situacao--sim">Concluído em jul/2026</span><p>Raio-X das seis frentes entregue e aprovado.</p></div>
+      <div class="etapa"><span class="contagem" aria-hidden="true"><span>02</span></span><b>Estratégia</b><span class="situacao situacao--sim">Concluída em ago/2026</span><p>Plano de 90 dias com o cardápio próprio primeiro.</p></div>
+      <div class="etapa anel anel--gira"><span class="contagem" aria-hidden="true"><span>03</span></span><b>Execução</b><span class="status"><i class="chama chama--pulsa" aria-hidden="true"></i>Em andamento</span><p>Combo de quinta, QR no lacre e anúncios com pedido rastreado.</p></div>
+      <div class="etapa"><span class="contagem" aria-hidden="true"><span>04</span></span><b>Otimização</b><span class="situacao situacao--cond">Começa em nov/2026</span><p>Primeira leitura com três meses de dado completo.</p></div>
+    </div>
+
+    <p class="rotulo mt-5">O que aprendemos</p>
+    <div class="aprendizados mt-2">
+      <article class="aprendizado">
+        <span class="contagem" aria-hidden="true"><span>01</span></span>
+        <h3>Preço fechado vende mais que <em>desconto</em></h3>
+        <p class="aprendizado__vimos"><b>O que vimos</b>O combo de quinta teve 112 pedidos em quatro quintas. O desconto de 10% de agosto, no mesmo dia, teve 51.<br><span class="origem" data-origem="medido">Medido</span> <span class="regua" style="display:inline">painel do cardápio próprio</span></p>
+        <p class="aprendizado__muda"><b>O que muda</b>Levar o mesmo formato para a sexta, que já é o dia mais forte, e medir de novo em outubro.</p>
+      </article>
+      <article class="aprendizado">
+        <span class="contagem" aria-hidden="true"><span>02</span></span>
+        <h3>Prato inteiro vence <em>bastidor</em> no anúncio</h3>
+        <p class="aprendizado__vimos"><b>O que vimos</b>O criativo com o combinado inteiro em 45 graus custou R$ 14,20 por pedido. O vídeo de bastidor custou R$ 26,80.<br><span class="origem" data-origem="calculado">Calculado</span> <span class="regua" style="display:inline">gerenciador de anúncios</span></p>
+        <p class="aprendizado__muda"><b>O que muda</b>Foto-mestra do prato na abertura de todo anúncio; bastidor fica para o conteúdo, onde ele aproxima.</p>
+      </article>
+      <article class="aprendizado">
+        <span class="contagem" aria-hidden="true"><span>03</span></span>
+        <h3>Quem chega pelo anúncio <em>volta</em></h3>
+        <p class="aprendizado__vimos"><b>O que vimos</b>71 dos 236 clientes que chegaram pelo anúncio (30%) fizeram um segundo pedido no mesmo mês.<br><span class="origem" data-origem="calculado">Calculado</span> <span class="regua" style="display:inline">cardápio próprio</span></p>
+        <p class="aprendizado__muda"><b>O que muda</b>Mensagem de segunda compra no WhatsApp para quem pediu pela primeira vez, só com o consentimento do cliente.</p>
+      </article>
+    </div>
+
+    <div class="nota mt-4"><strong>O que ainda não sabemos</strong>Quanto do crescimento do cardápio próprio veio do QR no lacre e quanto veio do combo de quinta: os dois começaram no mesmo mês. Com outubro e novembro, dá para separar o efeito de cada um. A nota no aplicativo também fica para outubro, quando o acesso ao painel voltar.</div>
+
+    <div class="folha__rodape">
+      <p><span data-r="cliente.nome">Kaze Sushi</span> · Relatório de <span data-r="periodo.mes">setembro/2026</span> · preparado pela Projeta Food. Números do período indicado; resultados variam por operação.<span class="so-exemplo"> Exemplo com marca e números fictícios.</span></p>
+      <img src="assets/brand/projeta-reduzida-positiva.svg" alt="Projeta Food" width="239" height="56">
+    </div>
+  </section>
+
+  <!-- ================================================================
+       FOLHA 7 · PRÓXIMOS PASSOS
+       No máximo cinco ações, cada uma com responsável, prazo e como
+       saberemos. Responsável é uma pessoa ou um lado, nunca "todos".
+       ================================================================ -->
+  <section class="folha campo-branco" id="pg-07" aria-labelledby="pg-07-t">
+    <div class="folio"><span><b data-r="cliente.nome">Kaze Sushi</b>&nbsp;· Relatório <span data-r="periodo.curto">set/2026</span></span><span class="folio__dir"><span class="pilula pilula--exemplo so-exemplo">Exemplo</span>07/08</span><div class="fio-fenda"></div></div>
+    <header class="pg-cab">
+      <span class="contagem" aria-hidden="true"><span>07</span></span>
+      <h2 id="pg-07-t">O que vem <em>em outubro</em>.</h2>
+      <p>Cinco ações, cada uma com quem faz, até quando e como vamos saber se funcionou.</p>
+    </header>
+
+    <div class="table-wrap mt-5">
+      <table class="consulta passos-tab">
+        <caption>Prazos de outubro/2026. A conferência de cada ação entra no relatório do mês que vem.</caption>
+        <thead><tr><th scope="col">Ação</th><th scope="col">Responsável</th><th scope="col">Prazo</th><th scope="col">Como saberemos</th></tr></thead>
+        <tbody>
+          <tr><td>Levar o combo para a sexta no cardápio próprio</td><td>Projeta (arte e anúncio) · restaurante (preço e produção)</td><td>03/10</td><td>Pedidos de sexta no cardápio próprio contra a média de setembro</td></tr>
+          <tr><td>Sessão de fotos-mestras dos seis itens sem foto</td><td>Restaurante (sessão) · Projeta (direção de foto)</td><td>10/10</td><td>Itens com foto aprovada no cardápio: de 3 para 9</td></tr>
+          <tr><td>Trocar o vídeo de bastidor por vídeo do prato inteiro</td><td>Projeta</td><td>07/10</td><td>Custo por pedido do criativo novo abaixo de R$ 20,00</td></tr>
+          <tr><td>Recuperar o acesso ao painel do aplicativo</td><td>Restaurante</td><td>06/10</td><td>Nota e pedidos do aplicativo presentes no relatório de outubro</td></tr>
+          <tr><td>Mensagem de segunda compra no WhatsApp, com consentimento</td><td>Projeta (texto e fluxo) · restaurante (aprovação)</td><td>17/10</td><td>Segundos pedidos no mês entre clientes novos</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="rotulo mt-5">O que combinamos no relatório de agosto</p>
+    <div class="table-wrap mt-2">
+      <table class="consulta passos-tab">
+        <caption>Toda ação combinada volta no relatório seguinte, feita ou não. O que ficou pendente entra no plano acima.</caption>
+        <thead><tr><th scope="col">Ação</th><th scope="col">Responsável</th><th scope="col">Prazo</th><th scope="col">Situação</th></tr></thead>
+        <tbody>
+          <tr><td>Combo de quinta no cardápio próprio</td><td>Projeta · restaurante</td><td>03/09</td><td><span class="situacao situacao--sim">Feito em 03/09</span></td></tr>
+          <tr><td>QR da embalagem no lacre da sacola</td><td>Restaurante</td><td>10/09</td><td><span class="situacao situacao--sim">Feito em 09/09</span></td></tr>
+          <tr><td>Fotos-mestras de nove itens</td><td>Restaurante · Projeta</td><td>20/09</td><td><span class="situacao situacao--cond">Parcial: 3 de 9</span></td></tr>
+          <tr><td>Acesso ao painel do aplicativo</td><td>Restaurante</td><td>15/09</td><td><span class="situacao situacao--nao">Pendente</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="rotulo mt-5">Decisões que dependem de você</p>
+    <div class="decisoes mt-2">
+      <div class="decisao"><span class="rotulo">Até a próxima reunião</span><p><b>Preço do combo de sexta.</b> Sugestão: o mesmo preço de quinta, para o cliente reconhecer a oferta. A arte só vai ao ar com o preço aprovado por escrito.</p></div>
+      <div class="decisao"><span class="rotulo">Até 03/10</span><p><b>Data da sessão de fotos.</b> Precisamos de duas horas com a cozinha produzindo os seis itens como eles saem para a entrega.</p></div>
+    </div>
+
+    <div class="reuniao mt-4">
+      <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>
+      <p><b>Conversa de resultado: 20 minutos.</b> Sugestão de horário: [dia e horário]. Passamos juntos pelas páginas 2 e 7 e fechamos as duas decisões acima.</p>
+    </div>
+
+    <div class="folha__rodape">
+      <p><span data-r="cliente.nome">Kaze Sushi</span> · Relatório de <span data-r="periodo.mes">setembro/2026</span> · preparado pela Projeta Food. Números do período indicado; resultados variam por operação.<span class="so-exemplo"> Exemplo com marca e números fictícios.</span></p>
+      <img src="assets/brand/projeta-reduzida-positiva.svg" alt="Projeta Food" width="239" height="56">
+    </div>
+  </section>
+
+  <!-- ================================================================
+       FOLHA 8 · RÉGUA, GLOSSÁRIO E AVISO
+       De onde vem cada número, os termos traduzidos e o aviso de que
+       resultados variam.
+       ================================================================ -->
+  <section class="folha campo-branco" id="pg-08" aria-labelledby="pg-08-t">
+    <div class="folio"><span><b data-r="cliente.nome">Kaze Sushi</b>&nbsp;· Relatório <span data-r="periodo.curto">set/2026</span></span><span class="folio__dir"><span class="pilula pilula--exemplo so-exemplo">Exemplo</span>08/08</span><div class="fio-fenda"></div></div>
+    <header class="pg-cab">
+      <span class="contagem" aria-hidden="true"><span>08</span></span>
+      <h2 id="pg-08-t">De onde vem <em>cada número</em>.</h2>
+      <p>Cada número deste relatório leva uma marca de origem. Você sabe na hora o que foi lido no painel e o que é conta ou estimativa.</p>
+    </header>
+
+    <p class="rotulo mt-5">Régua de prova</p>
+    <div class="reguas mt-2">
+      <div><span class="origem" data-origem="medido">Medido</span><p>Lido direto no painel do canal, sem conta nenhuma.</p></div>
+      <div><span class="origem" data-origem="calculado">Calculado</span><p>Conta feita com números medidos. A conta vem escrita ao lado.</p></div>
+      <div><span class="origem" data-origem="referencia">Referência</span><p>Número de fonte externa ou de contrato, citado com a fonte.</p></div>
+      <div><span class="origem" data-origem="estimado">Estimado</span><p>Aproximação com método dito. Nunca entra como certeza.</p></div>
+      <div><span class="origem" data-origem="sem-dado">Sem dado</span><p>Não chegou até o fechamento. Aparece com o traço, nunca como zero.</p></div>
+    </div>
+
+    <p class="rotulo mt-5">Fontes deste mês</p>
+    <ul class="lista-seta mt-2">
+      <li><b>Painel do cardápio próprio:</b> pedidos, faturamento e recompra. Extraído em [dd/mm].</li>
+      <li><b>Painéis dos aplicativos de delivery:</b> pedidos e faturamento. A nota do aplicativo ficou sem dado (acesso pendente).</li>
+      <li><b>Gerenciador de anúncios:</b> investimento, pessoas alcançadas e cliques. Extraído em [dd/mm].</li>
+      <li><b>Perfil da Empresa no Google e relatórios das redes sociais:</b> avaliações, nota, publicações e alcance.</li>
+    </ul>
+
+    <p class="rotulo mt-5">Glossário</p>
+    <dl class="glossario mt-2">
+      <div><dt>Custo por pedido</dt><dd>Investimento em anúncios dividido pelos pedidos que vieram deles.</dd></div>
+      <div><dt>Faturamento por real investido</dt><dd>Quanto o restaurante faturou com os pedidos de anúncio para cada R$ 1 colocado em anúncio.</dd></div>
+      <div><dt>Taxa de clique</dt><dd>De cada 100 pessoas que viram o anúncio, quantas clicaram.</dd></div>
+      <div><dt>Valor médio do pedido</dt><dd>Faturamento dividido pelo número de pedidos.</dd></div>
+      <div><dt>Recompra</dt><dd>Cliente que fez mais de um pedido dentro do período.</dd></div>
+      <div><dt>Pessoas alcançadas</dt><dd>Quantas pessoas viram a publicação ou o anúncio pelo menos uma vez.</dd></div>
+      <div><dt>Fatia do canal</dt><dd>Parte dos pedidos que veio de um canal, em porcentagem do total.</dd></div>
+      <div><dt>Pontos percentuais</dt><dd>Diferença entre duas porcentagens: de 24% para 31% são 7 pontos.</dd></div>
+    </dl>
+
+    <div class="resultado-varia mt-5" role="note">
+      <strong>Resultados variam</strong>
+      <p>Os números deste relatório são do <span data-r="cliente.nome">Kaze Sushi</span>, no período indicado. Eles dependem de cardápio, preço, região, sazonalidade e operação, e não são promessa nem média para outros meses ou outros restaurantes. Comparação de mês com mês mostra direção, não garantia.</p>
+    </div>
+
+    <p class="id-projeta mt-3">Projeta Food · [razão social] · CNPJ [nº] · Pouso Alegre (MG) · contato@projetafood.com.br<span class="so-exemplo"> · Exemplo: <span data-r="cliente.nome">Kaze Sushi</span> é marca fictícia e todos os números deste modelo são fictícios.</span></p>
+
+    <div class="folha__rodape">
+      <p><span data-r="cliente.nome">Kaze Sushi</span> · Relatório de <span data-r="periodo.mes">setembro/2026</span> · preparado pela Projeta Food.</p>
+      <img src="assets/brand/projeta-reduzida-positiva.svg" alt="Projeta Food" width="239" height="56">
+    </div>
+  </section>
+
+  <!-- ================================================================
+       ANEXO A · CRIATIVOS DO MÊS
+       Peças da camada 1: só a marca do restaurante, nenhuma forma da
+       Projeta. Foto-mestra desenhada: no relatório real, entra a miniatura
+       da peça aprovada que foi ao ar.
+       ================================================================ -->
+  <section class="folha campo-branco" id="pg-a1" aria-labelledby="pg-a1-t">
+    <div class="folio"><span><b data-r="cliente.nome">Kaze Sushi</b>&nbsp;· Relatório <span data-r="periodo.curto">set/2026</span></span><span class="folio__dir"><span class="pilula pilula--exemplo so-exemplo">Exemplo</span>Anexo A</span><div class="fio-fenda"></div></div>
+    <header class="pg-cab">
+      <span class="contagem" aria-hidden="true" style="--dig:1"><span>A</span></span>
+      <h2 id="pg-a1-t">Os criativos <em>do mês</em>.</h2>
+      <p>As quatro peças de anúncio do mês, com o resultado e a decisão para outubro. Todas aprovadas por escrito pelo restaurante antes de ir ao ar.</p>
+    </header>
+
+    <div class="criativos mt-4">
+      <article class="criativo">
+        <div class="peca-mini" role="img" aria-label="Miniatura do criativo 1 na marca do restaurante" data-r-aria="criativo.1.aria">
+          <div class="peca-mini__in">
+            <span class="marca-ficticia" aria-hidden="true" data-rh="logo.tipografico">Kaze <b>Sushi</b></span>
+            <div class="peca-mini__foto"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg><b>Foto-mestra</b></div>
+            <p class="peca-mini__titulo" data-rh="criativo.1.titulo">Combinado <em>20 peças</em></p>
+            <div class="peca-mini__linha"><span class="peca-mini__preco" data-rh="criativo.1.preco"><small>R$</small>59,90</span><span class="peca-mini__cond">Toda quinta<br>até 5 km</span></div>
+          </div>
+        </div>
+        <div>
+          <code class="criativo__nome" data-rh="criativo.1.arquivo">kazesushi_<wbr>combo-quinta_<wbr>oferta_<wbr>4x5_<wbr>v2</code>
+          <dl>
+            <div><dt>Formato</dt><dd>Feed 4:5 · oferta com condição</dd></div>
+            <div><dt>No ar</dt><dd>03 a 30/09/2026</dd></div>
+            <div><dt>Resultado</dt><dd><b>R$ 14,20 por pedido</b> <span class="origem" data-origem="calculado">Calculado</span><br>100 pedidos · R$ 1.420 investidos</dd></div>
+            <div><dt>Decisão</dt><dd><span class="situacao situacao--sim">Manter e levar para a sexta</span></dd></div>
+          </dl>
+        </div>
+      </article>
+
+      <article class="criativo">
+        <div class="peca-mini" role="img" aria-label="Miniatura do criativo 2 na marca do restaurante" data-r-aria="criativo.2.aria">
+          <div class="peca-mini__in">
+            <span class="marca-ficticia" aria-hidden="true" data-rh="logo.tipografico">Kaze <b>Sushi</b></span>
+            <div class="peca-mini__foto"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg><b>Foto-mestra</b></div>
+            <p class="peca-mini__titulo" data-rh="criativo.2.titulo">2 temakis <em>da casa</em></p>
+            <div class="peca-mini__linha"><span class="peca-mini__preco" data-rh="criativo.2.preco"><small>R$</small>39,90</span><span class="peca-mini__cond">Seg a qua<br>até 5 km</span></div>
+          </div>
+        </div>
+        <div>
+          <code class="criativo__nome" data-rh="criativo.2.arquivo">kazesushi_<wbr>temaki-dupla_<wbr>oferta_<wbr>4x5_<wbr>v1</code>
+          <dl>
+            <div><dt>Formato</dt><dd>Feed 4:5 · oferta com condição</dd></div>
+            <div><dt>No ar</dt><dd>01 a 30/09/2026</dd></div>
+            <div><dt>Resultado</dt><dd><b>R$ 16,86 por pedido</b> <span class="origem" data-origem="calculado">Calculado</span><br>70 pedidos · R$ 1.180 investidos</dd></div>
+            <div><dt>Decisão</dt><dd><span class="situacao situacao--sim">Manter</span></dd></div>
+          </dl>
+        </div>
+      </article>
+
+      <article class="criativo">
+        <div class="peca-mini story" role="img" aria-label="Miniatura do criativo 3, capa de vídeo na marca do restaurante" data-r-aria="criativo.3.aria">
+          <div class="peca-mini__in">
+            <span class="marca-ficticia" aria-hidden="true" data-rh="logo.tipografico">Kaze <b>Sushi</b></span>
+            <div class="peca-mini__foto"><b>Vídeo</b></div>
+            <p class="peca-mini__titulo" data-rh="criativo.3.titulo">Do balcão <em>até você</em></p>
+            <span class="peca-mini__botao">Peça pelo link da bio</span>
+            <span class="peca-mini__play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 3 20 12 6 21Z"/></svg></span>
+          </div>
+        </div>
+        <div>
+          <code class="criativo__nome" data-rh="criativo.3.arquivo">kazesushi_<wbr>bastidor_<wbr>video_<wbr>9x16_<wbr>v1</code>
+          <dl>
+            <div><dt>Formato</dt><dd>Vídeo curto 9:16 · bastidor</dd></div>
+            <div><dt>No ar</dt><dd>01 a 18/09/2026 (pausado)</dd></div>
+            <div><dt>Resultado</dt><dd><b>R$ 26,80 por pedido</b> <span class="origem" data-origem="calculado">Calculado</span><br>25 pedidos · R$ 670 investidos</dd></div>
+            <div><dt>Decisão</dt><dd><span class="situacao situacao--nao">Trocar por vídeo do prato inteiro</span></dd></div>
+          </dl>
+        </div>
+      </article>
+
+      <article class="criativo">
+        <div class="peca-mini story" role="img" aria-label="Miniatura do criativo 4, story na marca do restaurante" data-r-aria="criativo.4.aria">
+          <div class="peca-mini__in">
+            <span class="marca-ficticia" aria-hidden="true" data-rh="logo.tipografico">Kaze <b>Sushi</b></span>
+            <div class="peca-mini__foto"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg><b>Foto-mestra</b></div>
+            <p class="peca-mini__titulo" data-rh="criativo.4.titulo">Hot roll <em>da casa</em></p>
+            <div class="peca-mini__linha"><span class="peca-mini__preco" data-rh="criativo.4.preco"><small>R$</small>32,90</span><span class="peca-mini__cond">10 peças<br>até 5 km</span></div>
+            <span class="peca-mini__botao">Peça pelo nosso site</span>
+          </div>
+        </div>
+        <div>
+          <code class="criativo__nome" data-rh="criativo.4.arquivo">kazesushi_<wbr>hot-roll_<wbr>oferta_<wbr>9x16_<wbr>v1</code>
+          <dl>
+            <div><dt>Formato</dt><dd>Story 9:16 · oferta com condição</dd></div>
+            <div><dt>No ar</dt><dd>08 a 30/09/2026</dd></div>
+            <div><dt>Resultado</dt><dd><b>R$ 22,20 por pedido</b> <span class="origem" data-origem="calculado">Calculado</span><br>41 pedidos · R$ 910 investidos</dd></div>
+            <div><dt>Decisão</dt><dd><span class="situacao situacao--cond">Ajustar: foto-mestra nova</span></dd></div>
+          </dl>
+        </div>
+      </article>
+    </div>
+
+    <div class="grafico mt-4" data-pviz='{"tipo":"barras-h","titulo":"O prato inteiro custou menos","rotulos":["Criativo 1 · oferta 4:5","Criativo 2 · oferta 4:5","Criativo 4 · story","Criativo 3 · vídeo de bastidor"],"valores":[14.2,16.86,22.2,26.8],"vrotulos":["R$ 14,20","R$ 16,86","R$ 22,20","R$ 26,80"],"destaque":0,"rodape":false,"aria":"Custo por pedido de cada criativo em setembro de 2026"}'></div>
+    <p class="regua mt-3">Período: 01 a 30/09/2026 · base: 236 pedidos rastreados e R$ 4.180 investidos, somando as quatro peças · fonte: gerenciador de anúncios e cardápio próprio. Preço e condição de cada peça iguais aos do cardápio no período.<span class="so-exemplo"> Exemplo: as miniaturas mostram o espaço da foto-mestra desenhado; no relatório real, entra a miniatura da peça aprovada que foi ao ar.</span></p>
+
+    <div class="folha__rodape">
+      <p><span data-r="cliente.nome">Kaze Sushi</span> · Relatório de <span data-r="periodo.mes">setembro/2026</span> · preparado pela Projeta Food. Peças da camada 1, na marca do restaurante.<span class="so-exemplo"> Marcas fictícias criadas para o manual.</span></p>
+      <img src="assets/brand/projeta-reduzida-positiva.svg" alt="Projeta Food" width="239" height="56">
+    </div>
+  </section>
+
+</main>
+
+<script>
+/* Aplica o bloco RELATORIO: nome, período, envio, logo, cores, fontes e modo neutro.
+   Sem JavaScript, o relatório aparece inteiro com os valores escritos no HTML. */
+(function(){
+  var raiz = document.documentElement;
+  var R = window.RELATORIO || {};
+  function pega(obj, caminho){
+    return caminho.split('.').reduce(function(o, k){ return (o && o[k] != null) ? o[k] : undefined; }, obj);
+  }
+  function hueVermelho(hex){
+    /* fallback do PViz.pertoDoVermelho: matiz até cerca de 40 graus do vermelho */
+    var m = /^#?([0-9a-f]{6})$/i.exec(String(hex || '').trim());
+    if (!m) return false;
+    var n = parseInt(m[1], 16), r = (n >> 16 & 255) / 255, g = (n >> 8 & 255) / 255, b = (n & 255) / 255;
+    var mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
+    if (d < 0.12) return false;
+    var h = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4;
+    h = (h * 60 + 360) % 360;
+    return h <= 40 || h >= 320;
+  }
+  function perto(hex){
+    return (window.PViz && window.PViz.pertoDoVermelho) ? window.PViz.pertoDoVermelho(hex) : hueVermelho(hex);
+  }
+  function aplica(cfg){
+    var c = cfg.cliente || {};
+    var vars = { '--cliente-cor': c.corDados, '--cliente-cor-1': c.cor1, '--cliente-cor-2': c.cor2, '--cliente-cor-3': c.cor3,
+                 '--cliente-fonte-titulo': c.fonteTitulo, '--cliente-fonte-texto': c.fonteTexto };
+    Object.keys(vars).forEach(function(k){ if (vars[k]) raiz.style.setProperty(k, vars[k]); });
+    document.querySelectorAll('[data-r]').forEach(function(el){
+      var v = pega(cfg, el.getAttribute('data-r'));
+      if (typeof v === 'string' && v) el.textContent = v;
+    });
+    document.querySelectorAll('[data-rh]').forEach(function(el){
+      var v = pega(cfg, el.getAttribute('data-rh'));
+      if (typeof v === 'string' && v) el.innerHTML = v;
+    });
+    if (c.nome) document.querySelectorAll('[data-logo-cliente]').forEach(function(el){ el.setAttribute('aria-label', 'Logotipo de ' + c.nome); });
+    /* logo em arquivo: pelo bloco RELATORIO ou pela variável --cliente-logo */
+    var logo = c.logo;
+    if (!logo){
+      var css = getComputedStyle(raiz).getPropertyValue('--cliente-logo').trim();
+      var m = /url\((['"]?)(.*?)\1\)/.exec(css);
+      if (m) logo = m[2];
+    }
+    if (logo) document.querySelectorAll('[data-logo-cliente]').forEach(function(el){
+      el.innerHTML = '';
+      var img = document.createElement('img');
+      img.src = logo; img.alt = ''; img.setAttribute('aria-hidden', 'true');
+      el.appendChild(img);
+      el.classList.toggle('com-placa', c.placa !== false);
+    });
+    var neutro = c.neutro === true || (c.neutro !== false && perto(c.corDados));
+    raiz.classList.toggle('modo-neutro', !!neutro);
+    var capa = document.getElementById('pg-01');
+    if (capa){
+      capa.classList.toggle('campo-noite', !neutro); capa.classList.toggle('brasa', !neutro);
+      capa.classList.toggle('campo-branco', !!neutro);
+    }
+    raiz.classList.toggle('sem-exemplo', cfg.exemplo === false);
+    document.title = (c.nome ? c.nome + ' · ' : '') + 'Relatório ' + (pega(cfg, 'periodo.curto') || '');
+    if (window.PViz && window.PViz.redesenhar) window.PViz.redesenhar();
+  }
+  window.projetaRelatorio = aplica;
+
+  /* Demonstração do modo neutro (só no exemplo): troca para a marca fictícia Nonna Rosa,
+     vermelha. Os números continuam os mesmos; muda só a identidade. */
+  var NEUTRO = {
+    cliente: { nome: 'Nonna Rosa', logo: '', placa: true, corDados: '#C8102E', cor1: '#FFF8EE', cor2: '#2B2B2B', cor3: '#C8102E',
+               fonteTitulo: '"Playfair Display", Georgia, serif', fonteTexto: '"Lato", Arial, sans-serif', neutro: 'auto' },
+    logo: { tipografico: 'Nonna <b>Rosa</b>' },
+    criativo: {
+      1: { titulo: 'Parmegiana <em>para 2</em>', preco: '<small>R$</small>79,90', arquivo: 'nonnarosa_<wbr>combo-quinta_<wbr>oferta_<wbr>4x5_<wbr>v2' },
+      2: { titulo: 'Lasanha <em>da nonna</em>', preco: '<small>R$</small>49,90', arquivo: 'nonnarosa_<wbr>lasanha_<wbr>oferta_<wbr>4x5_<wbr>v1' },
+      3: { titulo: 'Do forno <em>até você</em>', arquivo: 'nonnarosa_<wbr>bastidor_<wbr>video_<wbr>9x16_<wbr>v1' },
+      4: { titulo: 'Nhoque <em>de domingo</em>', preco: '<small>R$</small>44,90', arquivo: 'nonnarosa_<wbr>nhoque_<wbr>oferta_<wbr>9x16_<wbr>v1' }
+    }
+  };
+  var original = null;
+  function guarda(){
+    original = { r: [], rh: [], estilo: raiz.getAttribute('style') || '' };
+    document.querySelectorAll('[data-r]').forEach(function(el){ original.r.push([el, el.textContent]); });
+    document.querySelectorAll('[data-rh]').forEach(function(el){ original.rh.push([el, el.innerHTML]); });
+  }
+  function restaura(){
+    original.r.forEach(function(p){ p[0].textContent = p[1]; });
+    original.rh.forEach(function(p){ p[0].innerHTML = p[1]; });
+    raiz.setAttribute('style', original.estilo);
+  }
+  function liga(){
+    aplica(R);
+    var botao = document.getElementById('alterna-neutro');
+    if (botao) botao.addEventListener('click', function(){
+      var ligado = botao.getAttribute('aria-pressed') === 'true';
+      if (!original) guarda();
+      if (ligado){ restaura(); aplica(R); }
+      else {
+        var cfg = JSON.parse(JSON.stringify(R));
+        cfg.cliente = NEUTRO.cliente; cfg.logo = NEUTRO.logo; cfg.criativo = NEUTRO.criativo;
+        aplica(cfg);
+      }
+      botao.setAttribute('aria-pressed', ligado ? 'false' : 'true');
+      botao.querySelector('span').textContent = ligado ? 'Ver o modo neutro' : 'Voltar ao padrão';
+    });
+    var imp = document.getElementById('imprimir');
+    if (imp) imp.addEventListener('click', function(){ window.print(); });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', liga);
+  else liga();
+})();
+</script>
+<script data-projeta-responsive="v1">
+/* Mobile System v1 da Projeta Food (copie literal, não reescreva).
+   1. Tabela de consulta (table.consulta): cada célula ganha data-label com o texto do
+      cabeçalho; no celular (até 640 px) cada linha vira um cartão e a primeira célula vira
+      o título. Tabela sem cabeçalho e com duas colunas vira chave e valor.
+   2. Matriz (.table-wrap.matriz) e carrossel: rolagem local visível, tabindex="0",
+      rótulo acessível e a dica "Deslize para ver..." logo acima.
+   Não esconde o estouro lateral da página: cada contêiner cuida do seu.
+   window.projetaMobile(raiz) roda de novo sobre conteúdo criado depois. */
+(function(){
+  var seta = '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>';
+  function todos(raiz, sel){
+    var lista = Array.prototype.slice.call(raiz.querySelectorAll ? raiz.querySelectorAll(sel) : []);
+    if (raiz.matches && raiz.matches(sel)) lista.unshift(raiz);
+    return lista;
+  }
+  function dica(el, texto){
+    var antes = el.previousElementSibling;
+    if (antes && antes.classList.contains('matriz-dica')) return;
+    var d = document.createElement('p');
+    d.className = 'matriz-dica';
+    Array.prototype.forEach.call(el.classList, function(c){ if (/^mt-\d$/.test(c)) d.classList.add(c); });
+    d.innerHTML = texto + ' ' + seta;
+    el.parentNode.insertBefore(d, el);
+  }
+  function rolagem(el, rotulo){
+    if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
+    if (!el.hasAttribute('role')) el.setAttribute('role', 'region');
+    if (!el.hasAttribute('aria-label')) el.setAttribute('aria-label', rotulo);
+  }
+  function projetaMobile(raiz){
+    raiz = raiz || document;
+    todos(raiz, 'table.consulta').forEach(function(tabela){
+      if (tabela.closest('.table-wrap.matriz') || tabela.__projeta) return;
+      tabela.__projeta = 1;
+      var cab = Array.prototype.map.call(tabela.querySelectorAll('thead th'), function(th, i){
+        return th.textContent.replace(/\s+/g, ' ').trim() || ('Coluna ' + (i + 1));
+      });
+      var linhas = Array.prototype.slice.call(tabela.querySelectorAll('tbody tr'));
+      if (!cab.length) {
+        var chaveValor = linhas.length && linhas.every(function(tr){ return tr.querySelectorAll(':scope > td, :scope > th').length === 2; });
+        if (chaveValor) tabela.classList.add('vira-cartao', 'chave-valor');
+        return;
+      }
+      tabela.classList.add('vira-cartao');
+      linhas.forEach(function(tr){
+        var i = 0;
+        Array.prototype.forEach.call(tr.children, function(celula){
+          if (!celula.matches('td, th')) return;
+          if (!celula.hasAttribute('data-label')) celula.setAttribute('data-label', cab[i] || 'Informação');
+          i += Number(celula.getAttribute('colspan') || 1);
+        });
+      });
+    });
+    todos(raiz, '.table-wrap.matriz').forEach(function(wrap){
+      var cap = wrap.querySelector('caption');
+      rolagem(wrap, cap ? cap.textContent.trim() : 'Tabela com rolagem lateral');
+      dica(wrap, 'Deslize para ver a tabela inteira');
+    });
+    todos(raiz, '.carrossel').forEach(function(faixa){
+      rolagem(faixa, faixa.getAttribute('data-rotulo') || 'Lâminas do carrossel, com rolagem lateral');
+      dica(faixa, 'Deslize para ver todas as lâminas');
+    });
+  }
+  window.projetaMobile = projetaMobile;
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function(){ projetaMobile(document); });
+  else projetaMobile(document);
+})();
+</script>
+<!-- Motor de gráficos: caminho relativo (o autocontido.py embute) -->
+<script src="pviz.js"></script>
+</body>
+</html>

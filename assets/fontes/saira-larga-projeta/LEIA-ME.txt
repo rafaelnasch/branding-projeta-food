@@ -1,0 +1,14 @@
+Saira Larga Projeta
+
+O que e: a fonte livre Saira (Omnibus-Type, licenca SIL Open Font License 1.1) fixada na largura 112,5%,
+a medida que substitui a Transducer nos titulos e numerais da Projeta Food.
+
+Para que serve: programas que nao regulam a largura de fonte variavel (Canva com envio de fonte,
+PowerPoint, Keynote, Google Docs nao aceita envio) passam a ter a largura certa sem ajuste manual.
+No navegador e no Figma, use a Saira do Google Fonts com font-stretch 112.5%.
+
+Pesos: Medium 500 (numeral), SemiBold 600 (numeral sobre Ignicao e Contagem), Bold 700 (titulo),
+ExtraBold 800 (titulo de impacto).
+
+Licenca: OFL 1.1 (arquivo OFL.txt nesta pasta). Versao modificada, com nome proprio, como a licenca pede.
+Esta pasta NUNCA recebe arquivos da Transducer ou da Kallisto (fontes comerciais licenciadas pela Projeta).
