@@ -37,9 +37,12 @@ Na camada 1 a Projeta **não aparece na arte**: nem logo, nem símbolo, nem Seta
 
 | Ambiente | Onde instalar | O que muda |
 |---|---|---|
-| **Claude Code** (terminal, VS Code, app de desktop) | `~/.claude/skills/branding-projeta-food` | Nada. Ambiente completo: escreve arquivo, usa `assets/`, roda os motores, exporta PDF. |
-| **Codex CLI** | `~/.codex/skills/branding-projeta-food` | Nada. |
-| **claude.ai** (navegador e celular) | Configurações, Capacidades, Skills (ZIP do Releases) | **O artefato é um arquivo só: não enxerga `assets/` nem os `.js`.** |
+| **Claude Code** (terminal, VS Code, app de desktop) | `~/.claude/skills/branding-projeta-food` (clone do repositório) | Nada. Ambiente completo: escreve arquivo, usa `assets/`, roda os motores, exporta PDF. |
+| **Codex** (CLI, IDE, app) | `~/.agents/skills/branding-projeta-food` (versões antigas: `~/.codex/skills/`) | Nada. `agents/openai.yaml` dá o nome e a descrição da lista de skills. |
+| **claude.ai** (navegador e celular) | Personalizar > Skills > + > Enviar uma skill: o `branding-projeta-food.zip` do Releases (execução de código ligada) | **O artefato é um arquivo só: não enxerga `assets/` nem os `.js`.** |
+| **ChatGPT** | Skills do app, onde a conta liberar o envio: o mesmo `branding-projeta-food.zip` | Igual ao claude.ai: material em arquivo único. |
+
+**O que o ZIP leva e o que fica no site do manual.** O pacote traz tudo o que a skill usa para produzir (marca em SVG e PNG web, favicon, avatar, imagem de compartilhamento, `marca.json`, assinatura com placa, fontes livres em woff2 e a Saira Larga Projeta, motores, modelos, kit do cliente e guia de uso). Ficam só no endereço público `https://rafaelnasch.github.io/branding-projeta-food/`: o vetor original do site (`assets/referencia-original/`), as PNG da marca em resolução de impressão (2400 px) e as versões autocontidas e PDFs do `dist/`. Para impressão, baixe a PNG grande de lá.
 
 **REGRA DO NAVEGADOR (claude.ai):** todo HTML gerado ali é **autocontido**.
 1. **Marca da Projeta:** use os blocos em **data URI** do [`lockup.html`](lockup.html) (completa, reduzida, símbolo e favicon, seções "A completa em data URI", "A reduzida em data URI" e "O símbolo e o favicon em data URI"). Copie o `src` inteiro; nunca digite, resuma ou reconstrua um data URI, nunca desenhe o logotipo em `<path>`.
@@ -48,7 +51,7 @@ Na camada 1 a Projeta **não aparece na arte**: nem logo, nem símbolo, nem Seta
 4. **Fontes:** continuam pelo link do Google Fonts (Saira, Unbounded, Barlow e as fontes livres do cliente). **Transducer e Kallisto nunca entram**, em lugar nenhum.
 5. **PDF:** entregue o HTML e mande imprimir pelo Chrome (seção "Celular e PDF").
 
-**Para ENVIAR um HTML a alguém**, use a versão autocontida: `python3 autocontido.py <arquivo.html>` grava em `dist/` com imagens, fontes livres e motores embutidos. As versões prontas do manual, da apresentação, do código da marca e deste guia já estão em `dist/` (rode `python3 autocontido.py` para gerar de novo).
+**Para ENVIAR um HTML a alguém**, use a versão autocontida: `python3 autocontido.py <arquivo.html>` grava em `dist/` com imagens, fontes livres e motores embutidos. As versões prontas do manual, da apresentação, do código da marca e deste guia estão em `dist/` no repositório e no endereço público (fora do ZIP; rode `python3 autocontido.py` para gerar de novo).
 
 ## Cores (TRAVADAS)
 
@@ -480,13 +483,13 @@ Versão interativa, com contador e "Copiar o resultado" para colar no registro, 
 | `kit-cliente.html` | Kit do cliente (camada 1): ficha de marca do restaurante editável na página, com contraste conferido na hora, aviso de modo neutro, fontes livres curadas por segmento, logo enviado por arquivo, tom, cidade e canais; cinco peças em canvas no tamanho real que trocam de identidade com a ficha (post 4:5, story 9:16, capa de destaque, banner do cardápio próprio 1920 × 640, foto do Perfil da Empresa no Google 1200 × 900), com áreas seguras, condição da oferta obrigatória (sem ela a peça não exporta) e crédito "Feito com Projeta Food" só no rodapé do cardápio, fora da imagem e com autorização; nove marcas fictícias; exportação em PNG com o nome `cliente_campanha_peca_formato_versao`; ficha exportada e importada em JSON e guardada no navegador; checklist de aprovação resumido. Segue as seções 22, 25 e 26 do manual. |
 | `pviz.js` · `pforms.js` | Motores de gráficos com régua e de formas da casa, em SVG puro, também para Canva e Figma. |
 | `autocontido.py` · `exportar_pdf.py` | Geram o arquivo único (em `dist/`) e o PDF. |
+| `agents/openai.yaml` · `tools/empacotar_skill.py` | Nome, ícone e pedido de exemplo no Codex e no ChatGPT (o Claude ignora); gerador do ZIP de instalação com as travas de tamanho (fica fora do ZIP). |
 | `index.html` | Abre o manual (página de entrada do site publicado). |
 | `assets/brand/` | A marca em SVG e PNG (completa, reduzida, símbolo, em cinco cores), foguete de construção, avatar, favicon, compartilhamento e `marca.json` com medidas, respiros e testes de leitura. |
 | `assets/aplicacoes/` | Arquivos de aplicação, como a assinatura de e-mail com placa para modo escuro. |
 | `assets/fontes/` | Só fontes livres: a Saira Larga Projeta (quatro pesos, licença aberta) e a reserva em woff2 das fontes do Google usadas pelo autocontido. |
 | `assets/referencia-original/` | O vetor e o favicon do site sem nenhuma alteração: prova de origem, não usar em peça. |
 | `dist/` | Versões de arquivo único, prontas para e-mail, WhatsApp e Drive, e o PDF. |
-
 
 **Nunca nesta pasta:** arquivos da Transducer ou da Kallisto, logotipo, foto, planilha, relatório ou qualquer dado real de restaurante cliente. O material de cada restaurante mora na pasta dele, no drive da Projeta.
 
