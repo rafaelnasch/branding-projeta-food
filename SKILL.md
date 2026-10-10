@@ -1,6 +1,6 @@
 ---
 name: branding-projeta-food
-description: "Identidade da Projeta Food (marketing para delivery do Grupo Projeta), sistema Plataforma Ignição v1: cores, fontes, logotipo, leis da casa, voz e regras de publicidade de agência e de comida. Use em todo material da Projeta (redes, anúncio, site, e-mail, WhatsApp, diagnóstico, proposta, deck, relatório, case) e no modo cliente, para peças de restaurantes clientes com a marca do restaurante. Gatilhos: projeta food, padrão projeta, plataforma ignição, modo cliente."
+description: "Identidade da Projeta Food (marketing para delivery do Grupo Projeta), sistema Plataforma Ignição v1: cores, fontes, logotipo, leis, voz e regras de publicidade de agência e de comida. Use em todo material da Projeta (redes, anúncio, site, e-mail, WhatsApp, diagnóstico, proposta, deck, relatório) e no modo cliente, em peças de restaurantes clientes. Gatilhos: projeta food, padrão projeta, plataforma ignição, modo cliente."
 ---
 
 # /branding-projeta-food · A identidade da Projeta Food e o kit para os restaurantes dela
